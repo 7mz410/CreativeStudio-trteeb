@@ -15,16 +15,16 @@ pub const BRAND: Color32 = Color32::from_rgb(0x4e, 0x7b, 0xfb);
 pub const DISCORD: Color32 = Color32::from_rgb(0x58, 0x65, 0xf2);
 
 /// The ArtCraft mark outline (viewBox -10 -19.42 136.34 136.34), from `docs/brand/artcraft-mark.svg`.
-const MARK_PATH: &str = "M104.28,49.49L81.55,0h-31.23l-3.17,4.76L14.75,53.63,0,75.85l21.55,21.55,63.79-36.94,16.99,37.04,14.01-21.74-12.06-26.27ZM32.89,65.66l32.42-48.87,10.91,23.77-43.32,25.09Z";
+const MARK_PATH: &str = ""; // Creative Studio: the mark is crate::studio_mark
 
 /// The other ArtCraft apps (app-page slug, name, what it is) — same list as the README.
 pub const SIBLINGS: &[(&str, &str, &str)] = &[
-    ("photocraft", "PhotoCraft", "image editing"),
-    ("vectorcraft", "VectorCraft", "vector illustration"),
-    ("filmcraft", "FilmCraft", "video editing, color and sound"),
-    ("lightcraft", "LightCraft", "photo library and raw development"),
-    ("pdfcraft", "PdfCraft", "reading, organizing and protecting PDFs"),
-    ("effectcraft", "EffectCraft", "motion graphics and visual effects"),
+    ("rsm", "rsm", "vector illustration"),
+    ("tlween", "tlween", "image editing"),
+    ("tsweer", "tsweer", "video editing, color and sound"),
+    ("ttshat", "ttshat", "photo library and raw development"),
+    ("sf7aat", "sf7aat", "reading, organizing and protecting PDFs"),
+    ("effectat", "effectat", "motion graphics and visual effects"),
 ];
 
 /// The About window's tabs, in `UiState::about_tab` order (`help.about {tab}` names them in lowercase).
@@ -40,12 +40,16 @@ pub fn paint_mark(ui: &egui::Ui, rect: Rect, color: Color32) {
     let tex: Option<egui::TextureHandle> = ctx.data(|d| d.get_temp(key));
     let tex = tex.unwrap_or_else(|| {
         let mut rc = vello_cpu::RenderContext::new_with(px as u16, px as u16, vello_cpu::RenderSettings { num_threads: 0, ..Default::default() });
-        let k = px as f64 / 136.34;
-        rc.set_transform(kurbo::Affine::scale(k) * kurbo::Affine::translate((10.0, 19.42)));
-        let [r, g, b, a] = color.to_srgba_unmultiplied();
-        rc.set_paint(peniko::Color::from_rgba8(r, g, b, a));
-        if let Ok(p) = kurbo::BezPath::from_svg(MARK_PATH) {
-            rc.fill_path(&p);
+        // Creative Studio: the trteeb star, centred, in its own colours (`color` is unused).
+        let _ = (color, MARK_PATH);
+        let (w, h) = crate::studio_mark::SIZE;
+        let k = px as f64 / w.max(h);
+        rc.set_transform(kurbo::Affine::scale(k) * kurbo::Affine::translate(((h - w).max(0.0) / 2.0, (w - h).max(0.0) / 2.0)));
+        for (d, [r, g, b]) in crate::studio_mark::PATHS {
+            rc.set_paint(peniko::Color::from_rgba8(*r, *g, *b, 255));
+            if let Ok(p) = kurbo::BezPath::from_svg(d) {
+                rc.fill_path(&p);
+            }
         }
         rc.flush();
         let mut pm = vello_cpu::Pixmap::new(px as u16, px as u16);
@@ -142,7 +146,7 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
             ui.add_space(6.0);
             ui.label(crate::rtl::widget(
                 ui,
-                egui::RichText::new(crate::i18n::tr(&app.ui.language, "DesignCraft")).font(semibold(26.0)).color(t.text_strong),
+                egui::RichText::new(crate::i18n::tr(&app.ui.language, "trteeb")).font(semibold(26.0)).color(t.text_strong),
             ));
             crate::rtl::label(
                 ui,
@@ -159,12 +163,12 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
             ));
             ui.label(crate::rtl::widget(
                 ui,
-                egui::RichText::new(crate::i18n::tr(&app.ui.language, "Part of the ArtCraft suite of open creative tools."))
+                egui::RichText::new(crate::i18n::tr(&app.ui.language, "Part of the Creative Studio suite of open creative tools."))
                     .size(12.0)
                     .color(t.text_dim),
             ));
             ui.add_space(16.0);
-            if discord_button(ui, "Join the ArtCraft Discord", vec2(300.0, 40.0)) {
+            if discord_button(ui, "Upstream community on Discord", vec2(300.0, 40.0)) {
                 open = Some("discord");
             }
             ui.add_space(4.0);
@@ -180,7 +184,7 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
                 let w = 330.0;
                 ui.add_space(((ui.available_width() - w) / 2.0).max(0.0));
                 for (text, key) in
-                    [("DesignCraft page", "appPage"), ("GitHub", "github"), ("getartcraft.com", "website"), ("Report an issue", "issues")]
+                    [("trteeb page", "appPage"), ("GitHub", "github"), ("studio.creative.ps", "website"), ("Report an issue", "issues")]
                 {
                     if link(ui, text, links::get(key).unwrap_or_default(), t.accent) {
                         open = Some(key);
@@ -193,7 +197,7 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
             ui.add_space(6.0);
             ui.label(crate::rtl::widget(
                 ui,
-                egui::RichText::new(crate::i18n::tr(&app.ui.language, "More ArtCraft apps")).font(semibold(12.0)).color(t.text_strong),
+                egui::RichText::new(crate::i18n::tr(&app.ui.language, "More Creative Studio apps")).font(semibold(12.0)).color(t.text_strong),
             ));
             ui.add_space(4.0);
             ui.horizontal(|ui| {
@@ -205,7 +209,7 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
                     - ui.spacing().item_spacing.x;
                 ui.add_space(((ui.available_width() - w) / 2.0).max(0.0));
                 for (slug, name, what) in SIBLINGS {
-                    let url = format!("{}/apps/{slug}", links::WEBSITE);
+                    let url = format!("https://{slug}.studio.creative.ps");
                     let b =
                         ui.add(egui::Button::new(egui::RichText::new(*name).size(12.0)).corner_radius(10.0)).on_hover_text(format!("{what} — {url}"));
                     if b.clicked() {

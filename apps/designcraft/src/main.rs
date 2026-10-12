@@ -168,8 +168,8 @@ fn open_filters(purpose: &str) -> &'static [OpenFilter] {
             OpenFilter { name: "Video and sound", extensions: &["mp4", "m4v", "mov", "webm", "mp3", "m4a", "wav", "ogg"] },
         ],
         _ => &[
-            OpenFilter { name: "DesignCraft or IDML", extensions: &["designcraft", "idml"] },
-            OpenFilter { name: "DesignCraft", extensions: &["designcraft"] },
+            OpenFilter { name: "trteeb or IDML", extensions: &["designcraft", "idml"] },
+            OpenFilter { name: "trteeb", extensions: &["designcraft"] },
             OpenFilter { name: "InDesign Markup (IDML)", extensions: &["idml"] },
         ],
     }
@@ -238,14 +238,14 @@ fn main() -> eframe::Result {
     // leaves no file behind. Records logged until now are written to it first.
     if let (Some(logger), Some(dir)) = (logger, profile::config_dir()) {
         match logger.attach_dir(&dir.join("logs")) {
-            Ok(path) => log::info!("DesignCraft {}, log file {}", env!("CARGO_PKG_VERSION"), path.display()),
+            Ok(path) => log::info!("trteeb {}, log file {}", env!("CARGO_PKG_VERSION"), path.display()),
             // Standard error only by now (`attach_dir` gave up on the file); unlike `eprintln!`, never panics.
             Err(e) => log::warn!("no log file: {e}"),
         }
     }
     let mut options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_title("DesignCraft")
+            .with_title("trteeb")
             .with_inner_size([1440.0, 900.0])
             .with_min_inner_size([900.0, 560.0])
             .with_drag_and_drop(true)
@@ -277,7 +277,7 @@ fn main() -> eframe::Result {
         }));
     }
     eframe::run_native(
-        "DesignCraft",
+        "trteeb",
         options,
         Box::new(move |cc| {
             let mut gpu = gpu;

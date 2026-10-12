@@ -22,6 +22,7 @@ mod prefs;
 pub mod render_worker;
 mod rtl;
 pub mod story_editor;
+pub mod studio_mark;
 pub mod taskbar;
 pub mod theme;
 pub mod toolbar;

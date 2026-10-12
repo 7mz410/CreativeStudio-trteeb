@@ -7,13 +7,13 @@
   <key>CFBundleDevelopmentRegion</key>
   <string>en</string>
   <key>CFBundleDisplayName</key>
-  <string>DesignCraft</string>
+  <string>trteeb</string>
   <key>CFBundleName</key>
-  <string>DesignCraft</string>
+  <string>trteeb</string>
   <key>CFBundleExecutable</key>
   <string>DesignCraft</string>
   <key>CFBundleIdentifier</key>
-  <string>ai.storyteller.designcraft</string>
+  <string>ps.creative.studio.trteeb</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundlePackageType</key>
@@ -52,7 +52,7 @@
       <key>UTTypeIdentifier</key>
       <string>ai.storyteller.designcraft.document</string>
       <key>UTTypeDescription</key>
-      <string>DesignCraft Document</string>
+      <string>trteeb Document</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>

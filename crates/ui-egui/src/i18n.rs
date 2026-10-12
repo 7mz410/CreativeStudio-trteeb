@@ -698,7 +698,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ["Spreads of up to 10 pages", "Spreads of up to 10 pages", "Spreads of up to 10 pages", "Spreads of up to 10 pages", "最多10页的跨页"],
     ),
     ("for", ["for", "pour", "por", "に対して", "行"]),
-    ("About DesignCraft", ["About DesignCraft", "About DesignCraft", "About DesignCraft", "About DesignCraft", "关于 DesignCraft"]),
+    ("About trteeb", ["About trteeb", "About trteeb", "About trteeb", "About trteeb", "关于 trteeb"]),
     ("Accept All Changes", ["Accept All Changes", "Accept All Changes", "Accept All Changes", "Accept All Changes", "接受所有更改"]),
     ("Activate Document", ["Activate Document", "Activate Document", "Activate Document", "Activate Document", "激活文档"]),
     ("Add Anchor Point", ["Add Anchor Point", "Add Anchor Point", "Add Anchor Point", "Add Anchor Point", "添加锚点"]),
@@ -879,11 +879,8 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Delete Item", ["Delete Item", "Delete Item", "Delete Item", "Delete Item", "删除项目"]),
     ("Delete Text Variable", ["Delete Text Variable", "Delete Text Variable", "Delete Text Variable", "Delete Text Variable", "删除文本变量"]),
     ("Delete Workspace…", ["Delete Workspace…", "Delete Workspace…", "Delete Workspace…", "Delete Workspace…", "删除工作区…"]),
-    ("DesignCraft Website…", ["DesignCraft Website…", "DesignCraft Website…", "DesignCraft Website…", "DesignCraft Website…", "DesignCraft 网站…"]),
-    (
-        "DesignCraft on GitHub…",
-        ["DesignCraft on GitHub…", "DesignCraft on GitHub…", "DesignCraft on GitHub…", "DesignCraft on GitHub…", "DesignCraft 在 GitHub 上…"],
-    ),
+    ("trteeb Website…", ["trteeb Website…", "trteeb Website…", "trteeb Website…", "trteeb Website…", "trteeb 网站…"]),
+    ("trteeb on GitHub…", ["trteeb on GitHub…", "trteeb on GitHub…", "trteeb on GitHub…", "trteeb on GitHub…", "trteeb 在 GitHub 上…"]),
     (
         "Detach All Objects from Parent",
         [
@@ -1021,12 +1018,12 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Inspect Document", ["Inspect Document", "Inspect Document", "Inspect Document", "Inspect Document", "检查文档"]),
     ("Interface Color Theme", ["Interface Color Theme", "Interface Color Theme", "Interface Color Theme", "Interface Color Theme", "界面颜色主题"]),
     (
-        "Join the ArtCraft Discord…",
+        "Upstream community on Discord…",
         [
-            "Join the ArtCraft Discord…",
-            "Join the ArtCraft Discord…",
-            "Join the ArtCraft Discord…",
-            "Join the ArtCraft Discord…",
+            "Upstream community on Discord…",
+            "Upstream community on Discord…",
+            "Upstream community on Discord…",
+            "Upstream community on Discord…",
             "加入 ArtCraft Discord…",
         ],
     ),
@@ -1513,7 +1510,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ["Cross-Reference Format", "Cross-Reference Format", "Cross-Reference Format", "Cross-Reference Format", "交叉引用格式"],
     ),
     ("Delete Workspace", ["Delete Workspace", "Delete Workspace", "Delete Workspace", "Delete Workspace", "删除工作区"]),
-    ("DesignCraft", ["DesignCraft", "DesignCraft", "DesignCraft", "DesignCraft", "DesignCraft"]),
+    ("trteeb", ["trteeb", "trteeb", "trteeb", "trteeb", "trteeb"]),
     ("Display Performance", ["Display Performance", "Display Performance", "Display Performance", "Display Performance", "显示性能"]),
     ("Document Grid", ["Document Grid", "Document Grid", "Document Grid", "Document Grid", "文档网格"]),
     (
@@ -1853,10 +1850,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ),
     ("Utilities", ["Utilities", "Utilities", "Utilities", "Utilities", "实用程序"]),
     ("Variable Font", ["Variable Font", "Variable Font", "Variable Font", "Variable Font", "可变字体"]),
-    (
-        "Welcome to DesignCraft",
-        ["Welcome to DesignCraft", "Welcome to DesignCraft", "Welcome to DesignCraft", "Welcome to DesignCraft", "欢迎使用 DesignCraft"],
-    ),
+    ("Welcome to trteeb", ["Welcome to trteeb", "Welcome to trteeb", "Welcome to trteeb", "Welcome to trteeb", "欢迎使用 trteeb"]),
     ("When Scaling", ["When Scaling", "When Scaling", "When Scaling", "When Scaling", "缩放时"]),
     ("[Basic] (working) ▾", ["[Basic] (working) ▾", "[Basic] (working) ▾", "[Basic] (working) ▾", "[Basic] (working) ▾", "[基本] (工作区) ▾"]),
     ("[Black] Overprint", ["[Black] Overprint", "[Black] Overprint", "[Black] Overprint", "[Black] Overprint", "[黑] 叠印"]),

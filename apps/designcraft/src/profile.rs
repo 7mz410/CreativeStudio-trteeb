@@ -14,7 +14,7 @@ fn config_dir_with(os: &str, env: impl Fn(&str) -> Option<OsString>) -> Option<P
     }
     match os {
         "macos" => env("HOME").map(|p| PathBuf::from(p).join("Library/Application Support/DesignCraft")),
-        "windows" => env("APPDATA").map(|p| PathBuf::from(p).join("DesignCraft")),
+        "windows" => env("APPDATA").map(|p| PathBuf::from(p).join("trteeb")),
         _ => {
             env("XDG_CONFIG_HOME").map(PathBuf::from).or_else(|| env("HOME").map(|p| PathBuf::from(p).join(".config"))).map(|p| p.join("designcraft"))
         }
