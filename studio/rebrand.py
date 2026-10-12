@@ -129,9 +129,12 @@ def apply_rules() -> list:
     for rel, a, b, *marker in RULES:
         p = ROOT / rel
         s = p.read_text(encoding='utf-8')
-        if (b and b in s) or (marker and marker[0] in s):
+        if marker and marker[0] in s:
             continue
-        if a not in s:
+        renamed = STRING.sub(lambda m: rename(m.group(0), NAME), a)
+        if a not in s and renamed in s:
+            a = renamed  # the general rename got there first
+        if a not in s or (b and a in b and b in s):
             if not b or b in s or STRING.sub(lambda m: rename(m.group(0), NAME), b) in s:
                 continue  # already applied
             print(f'warning: {rel}: upstream text not found (did upstream change it?): {a[:70]!r}')
@@ -152,7 +155,9 @@ def write_mark() -> bool:
     _, _, w, h = (float(x) for x in re.search(r'viewBox="([^"]+)"', svg).group(1).split())
     fills = dict(re.findall(r'\.(cls-\d+)\s*\{\s*fill:\s*#([0-9a-fA-F]{6})', svg))
     rows = []
-    for cls, d in re.findall(r'<path class="(cls-\d+)" d="([^"]+)"', svg):
+    for attrs in re.findall(r'<path\b([^>]*)>', svg):
+        cls = re.search(r'class="(cls-\d+)"', attrs).group(1)
+        d = re.search(r'\bd="([^"]+)"', attrs).group(1)
         c = fills[cls]
         rgb = ', '.join(str(int(c[i:i + 2], 16)) for i in (0, 2, 4))
         rows.append(f'    ("{d}", [{rgb}]),')

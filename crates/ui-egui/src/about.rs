@@ -168,16 +168,6 @@ pub fn show(app: &mut DesignApp, ctx: &egui::Context) {
                     .color(t.text_dim),
             ));
             ui.add_space(16.0);
-            if discord_button(ui, "Upstream community on Discord", vec2(300.0, 40.0)) {
-                open = Some("discord");
-            }
-            ui.add_space(4.0);
-            ui.label(crate::rtl::widget(
-                ui,
-                egui::RichText::new(crate::i18n::tr(&app.ui.language, "discord.gg/artcraft — help, feedback and show-and-tell"))
-                    .size(11.0)
-                    .color(t.text_dim),
-            ));
             ui.add_space(14.0);
             ui.horizontal(|ui| {
                 // Centre the row of links.
