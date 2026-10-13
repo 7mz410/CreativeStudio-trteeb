@@ -203,5 +203,32 @@ def main():
         print('rebranded', c)
 
 
+# Creative Studio: the macOS app folder in the .dmg and the volume name carry our name
+# (packaging/macos/package.sh). Bundle and binary names inside the package stay as upstream has them.
+PACKAGING_NAMES = {
+    'packaging/macos/package.sh': [
+        ('DesignCraft.app', 'trteeb.app'),
+        ('-volname "DesignCraft"', '-volname "trteeb"'),
+        ('-hfs-volume-name "DesignCraft"', '-hfs-volume-name "trteeb"'),
+    ],
+}
+
+
+def apply_packaging_names() -> list:
+    changed = []
+    for rel, pairs in PACKAGING_NAMES.items():
+        path = ROOT / rel
+        src = path.read_text(encoding='utf-8')
+        out = src
+        for a, b in pairs:
+            out = out.replace(a, b)
+        if out != src:
+            path.write_text(out, encoding='utf-8')
+            changed.append(path)
+    return changed
+
+
 if __name__ == '__main__':
     main()
+    for _p in apply_packaging_names():
+        print('rebranded', _p.relative_to(ROOT))

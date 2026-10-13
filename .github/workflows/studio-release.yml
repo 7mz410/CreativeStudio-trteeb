@@ -20,5 +20,5 @@ jobs:
       app: trteeb
       package: designcraft
       version_var: DESIGNCRAFT_VERSION
-      bundle: DesignCraft.app
+      bundle: trteeb.app
       tag: ${{ github.ref_name }}
