@@ -129,8 +129,8 @@ fn a_data_source_path_stored_in_a_document_is_read_through_the_roots() {
 #[test]
 fn a_book_writes_its_chapters_only_inside_the_write_root() {
     let (base, roots) = folders("book");
-    let chapter = base.join("in/a.designcraft");
-    let second = base.join("in/b.designcraft");
+    let chapter = base.join("in/a.trteeb");
+    let second = base.join("in/b.trteeb");
     {
         // Made by another session: a book only rewrites chapters that are not open.
         let mut maker = Session::new();

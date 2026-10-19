@@ -52,9 +52,9 @@ pub fn specs() -> Vec<CommandSpec> {
             s.prefs.recent_files.clear();
             ok()
         }),
-        cmd!(noundo "file.save", "Save", ["File"], Some("Cmd+S"), "{path?} — a `path` without the .designcraft extension gets it → {path: the file written, bytes}", has_doc, file_save),
-        cmd!(noundo "file.saveAs", "Save As…", ["File"], Some("Cmd+Shift+S"), "{path} — a path without the .designcraft extension gets it → {path: the file written, bytes}", has_doc, file_save),
-        cmd!(noundo "file.saveACopy", "Save a Copy…", ["File"], None, "{path} — writes the document without changing which file it is or its unsaved state; a path without the .designcraft extension gets it → {path: the file written, bytes}", has_doc, |s, p| {
+        cmd!(noundo "file.save", "Save", ["File"], Some("Cmd+S"), "{path?} — a `path` without the .trteeb extension gets it → {path: the file written, bytes}", has_doc, file_save),
+        cmd!(noundo "file.saveAs", "Save As…", ["File"], Some("Cmd+Shift+S"), "{path} — a path without the .trteeb extension gets it → {path: the file written, bytes}", has_doc, file_save),
+        cmd!(noundo "file.saveACopy", "Save a Copy…", ["File"], None, "{path} — writes the document without changing which file it is or its unsaved state; a path without the .trteeb extension gets it → {path: the file written, bytes}", has_doc, |s, p| {
             let path = str_param(p, "path").ok_or_else(|| bad("file.saveACopy", "missing `path`"))?;
             let path = with_document_extension(path);
             let mut copy = (*s.doc()?.doc).clone();
@@ -162,15 +162,19 @@ fn save_bytes(d: &Document, preview: Option<&[u8]>) -> Result<Vec<u8>> {
     designcraft_format::save_with_preview(d, preview).map_err(|e| EngineError::Other(format!("could not write the document: {e}")))
 }
 
-/// `path` ending in `.designcraft`: the extension is added when it is missing or another one, so
-/// the file opens from the file manager. A path without a file name is left for the write to fail.
+/// `path` ending in `.trteeb`: the extension is added when it is missing or another one, so the
+/// file opens from the file manager. An old `.designcraft` name takes the new extension. A path
+/// without a file name is left for the write to fail.
 pub fn with_document_extension(path: &str) -> String {
     let p = std::path::Path::new(path);
     let ext = p.extension().and_then(|e| e.to_str());
-    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::EXTENSION)) {
+    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::STUDIO_EXTENSION)) {
         return path.to_string();
     }
-    format!("{path}.{}", designcraft_format::EXTENSION)
+    if ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::EXTENSION)) {
+        return p.with_extension(designcraft_format::STUDIO_EXTENSION).to_string_lossy().into_owned();
+    }
+    format!("{path}.{}", designcraft_format::STUDIO_EXTENSION)
 }
 
 /// Whether `bytes` are a document `file.open` reads: a DesignCraft package or an IDML package.
@@ -474,7 +478,7 @@ fn open_path(s: &mut Session, p: &Value) -> Result<Value> {
         if designcraft_idml::is_idml(&bytes) || (!native && (super::interchange::is_indd(path, &bytes) || ext == "idml")) {
             return super::interchange::open_idml(s, p);
         }
-        if !native && ext != designcraft_format::EXTENSION {
+        if !native && !designcraft_format::is_native_ext(&ext) {
             return Err(bad("file.open", format!("{path}: not a DesignCraft or IDML file")));
         }
         let (mut d, mut warnings) = load_bytes(&bytes)?;
@@ -1601,7 +1605,7 @@ mod save_tests {
         let dir = std::env::temp_dir().join(format!("dc-save-atomic-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("doc.designcraft");
+        let path = dir.join("doc.trteeb");
         std::fs::write(&path, vec![b'x'; 1 << 20]).unwrap();
         let mut s = Session::new();
         s.execute("file.new", &json!({})).unwrap();
@@ -1611,9 +1615,9 @@ mod save_tests {
         let saved = super::from_bytes(&std::fs::read(&path).unwrap()).unwrap();
         assert!(saved.stories.values().any(|st| st.text == "Saved whole"));
         let names: Vec<_> = std::fs::read_dir(&dir).unwrap().map(|e| e.unwrap().file_name()).collect();
-        assert_eq!(names, ["doc.designcraft"], "no temporary file is left");
+        assert_eq!(names, ["doc.trteeb"], "no temporary file is left");
         // A folder that doesn't exist: an error naming the path.
-        let missing = dir.join("missing").join("doc.designcraft");
+        let missing = dir.join("missing").join("doc.trteeb");
         let e = s.execute("file.save", &json!({"path": missing.to_string_lossy()})).unwrap_err();
         assert!(e.to_string().contains("missing"), "{e}");
         let _ = std::fs::remove_dir_all(&dir);
@@ -1626,7 +1630,7 @@ mod save_tests {
         let dir = std::env::temp_dir().join(format!("dc-save-fails-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("doc.designcraft");
+        let path = dir.join("doc.trteeb");
         let recovery = dir.join("recovery");
         let mut s = Session::new();
         s.execute("file.new", &json!({})).unwrap();
@@ -1639,8 +1643,8 @@ mod save_tests {
 
         super::FAIL_TO_BYTES.with(|f| f.set(true));
         let save = s.execute("file.save", &json!({}));
-        let copy = s.execute("file.saveACopy", &json!({"path": dir.join("copy.designcraft").to_string_lossy()}));
-        let save_as = s.execute("file.saveAs", &json!({"path": dir.join("other.designcraft").to_string_lossy()}));
+        let copy = s.execute("file.saveACopy", &json!({"path": dir.join("copy.trteeb").to_string_lossy()}));
+        let save_as = s.execute("file.saveAs", &json!({"path": dir.join("other.trteeb").to_string_lossy()}));
         let serialized = s.execute("file.serialize", &json!({}));
         super::FAIL_TO_BYTES.with(|f| f.set(false));
 
@@ -1648,9 +1652,9 @@ mod save_tests {
         assert!(e.to_string().contains("could not write the document"), "{e}");
         assert!(copy.is_err() && serialized.is_err(), "no empty copy and no empty download");
         assert_eq!(std::fs::read(&path).unwrap(), before, "the saved file is untouched");
-        assert!(!dir.join("copy.designcraft").exists());
-        assert!(save_as.is_err() && !dir.join("other.designcraft").exists());
-        assert!(!s.prefs.recent_files.iter().any(|p| p.ends_with("other.designcraft")), "a failed Save As isn't a recent file");
+        assert!(!dir.join("copy.trteeb").exists());
+        assert!(save_as.is_err() && !dir.join("other.trteeb").exists());
+        assert!(!s.prefs.recent_files.iter().any(|p| p.ends_with("other.trteeb")), "a failed Save As isn't a recent file");
         assert!(s.doc().unwrap().is_dirty(), "the document still has unsaved changes");
         assert!(checkpoint.exists(), "the recovery checkpoint stays");
         let _ = std::fs::remove_dir_all(&dir);
@@ -1670,7 +1674,7 @@ mod save_tests {
         let dir = std::env::temp_dir().join(format!("dc-save-non-finite-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("doc.designcraft");
+        let path = dir.join("doc.trteeb");
         s.execute("file.save", &json!({"path": path.to_string_lossy()})).unwrap();
         let before = std::fs::read(&path).unwrap();
         let id = designcraft_doc::ItemId(s.execute("frame.create", &json!({"rect": [36, 36, 300, 200]})).unwrap()["id"].as_u64().unwrap());
@@ -1721,7 +1725,7 @@ mod document_fonts_tests {
         if path.extension().is_some_and(|e| e == "idml") {
             std::fs::write(path, designcraft_idml::export_idml(&s.doc().unwrap().doc)).unwrap();
         } else {
-            s.execute("file.save", &json!({"path": path.to_string_lossy()})).unwrap();
+            std::fs::write(path, designcraft_format::save_with_preview(&s.doc().unwrap().doc, None).unwrap()).unwrap();
         }
     }
 
@@ -1951,10 +1955,11 @@ mod extension_tests {
 
     #[test]
     fn the_document_extension_is_added_when_missing_or_different() {
-        assert_eq!(with_document_extension("/a/Brochure"), "/a/Brochure.designcraft");
-        assert_eq!(with_document_extension("/a/Brochure.idml"), "/a/Brochure.idml.designcraft");
-        assert_eq!(with_document_extension("/a/v1.2 Brochure"), "/a/v1.2 Brochure.designcraft");
-        assert_eq!(with_document_extension("/a/Brochure.DesignCraft"), "/a/Brochure.DesignCraft");
+        assert_eq!(with_document_extension("/a/Brochure"), "/a/Brochure.trteeb");
+        assert_eq!(with_document_extension("/a/Brochure.idml"), "/a/Brochure.idml.trteeb");
+        assert_eq!(with_document_extension("/a/v1.2 Brochure"), "/a/v1.2 Brochure.trteeb");
+        assert_eq!(with_document_extension("/a/Brochure.trteeb"), "/a/Brochure.trteeb");
+        assert_eq!(with_document_extension("/a/Brochure.DesignCraft"), "/a/Brochure.trteeb");
         assert_eq!(with_document_extension("/a/.."), "/a/..");
     }
 
@@ -1967,13 +1972,13 @@ mod extension_tests {
         s.execute("file.new", &json!({})).unwrap();
 
         let bare = dir.join("Brochure");
-        let written = dir.join("Brochure.designcraft");
+        let written = dir.join("Brochure.trteeb");
         let r = s.execute("file.saveAs", &json!({"path": bare.to_string_lossy()})).unwrap();
         assert_eq!(r["path"], json!(written.to_string_lossy()), "{r}");
         assert!(written.is_file() && !bare.exists());
         assert_eq!(s.doc().unwrap().path.as_deref(), written.to_str());
         let r = s.execute("file.saveACopy", &json!({"path": dir.join("Copy").to_string_lossy()})).unwrap();
-        assert_eq!(r["path"], json!(dir.join("Copy.designcraft").to_string_lossy()), "{r}");
+        assert_eq!(r["path"], json!(dir.join("Copy.trteeb").to_string_lossy()), "{r}");
 
         // A native file without the extension opens, and Save writes back to that same file.
         std::fs::rename(&written, &bare).unwrap();
@@ -2028,15 +2033,15 @@ mod recent_tests {
     fn open_and_save_order_the_list_without_duplicates() {
         let dir = temp_dir("order");
         let mut s = Session::new();
-        let a = saved(&mut s, &dir.join("a.designcraft"));
-        let b = saved(&mut s, &dir.join("b.designcraft"));
+        let a = saved(&mut s, &dir.join("a.trteeb"));
+        let b = saved(&mut s, &dir.join("b.trteeb"));
         assert_eq!(s.prefs.recent_files, [b.clone(), a.clone()]);
         s.execute("file.open", &json!({"path": a})).unwrap();
         assert_eq!(s.prefs.recent_files, [a.clone(), b.clone()], "reopening moves it to the front, once");
-        s.execute("file.saveACopy", &json!({"path": dir.join("copy.designcraft").to_string_lossy()})).unwrap();
+        s.execute("file.saveACopy", &json!({"path": dir.join("copy.trteeb").to_string_lossy()})).unwrap();
         assert_eq!(s.prefs.recent_files, [a.clone(), b.clone()], "a copy isn't a recent file");
         let rows = s.execute("file.recentFiles", &json!({})).unwrap();
-        assert_eq!(rows[0], json!({"path": a, "name": "a.designcraft", "exists": true}));
+        assert_eq!(rows[0], json!({"path": a, "name": "a.trteeb", "exists": true}));
         let _ = std::fs::remove_dir_all(&dir);
     }
 
@@ -2044,8 +2049,8 @@ mod recent_tests {
     fn open_recent_reopens_and_a_missing_file_is_an_error_that_keeps_it_listed() {
         let dir = temp_dir("open");
         let mut s = Session::new();
-        let a = saved(&mut s, &dir.join("a.designcraft"));
-        let b = saved(&mut s, &dir.join("b.designcraft"));
+        let a = saved(&mut s, &dir.join("a.trteeb"));
+        let b = saved(&mut s, &dir.join("b.trteeb"));
         let r = s.execute("file.openRecent", &json!({"index": 1})).unwrap();
         assert_eq!(s.documents()[r["index"].as_u64().unwrap() as usize].path.as_deref(), Some(a.as_str()));
         assert_eq!(s.prefs.recent_files, [a.clone(), b.clone()]);
@@ -2070,18 +2075,18 @@ mod recent_tests {
     fn saved_files_carry_a_first_page_preview() {
         let dir = temp_dir("preview");
         let mut s = Session::new();
-        let a = saved(&mut s, &dir.join("a.designcraft"));
+        let a = saved(&mut s, &dir.join("a.trteeb"));
         let p = super::recent_preview(&a).expect("a preview");
         assert_eq!(p.width.max(p.height), super::PREVIEW_PX as u32);
         assert_eq!(p.rgba.len(), (p.width * p.height * 4) as usize);
         assert!(p.rgba.as_chunks::<4>().0.iter().any(|px| px[3] == 255), "the page is drawn, not left transparent");
-        let copy = dir.join("copy.designcraft");
+        let copy = dir.join("copy.trteeb");
         s.execute("file.saveACopy", &json!({"path": copy.to_string_lossy()})).unwrap();
         assert!(super::recent_preview(&copy.to_string_lossy()).is_some(), "Save a Copy has one too");
         // Files without one (saved before previews), missing files and other files have none.
-        let old = dir.join("old.designcraft");
+        let old = dir.join("old.trteeb");
         std::fs::write(&old, super::to_bytes(&s.doc().unwrap().doc).unwrap()).unwrap();
-        for path in [old, dir.join("gone.designcraft"), dir.clone()] {
+        for path in [old, dir.join("gone.trteeb"), dir.clone()] {
             assert!(super::recent_preview(&path.to_string_lossy()).is_none(), "{path:?}");
         }
         let _ = std::fs::remove_dir_all(&dir);

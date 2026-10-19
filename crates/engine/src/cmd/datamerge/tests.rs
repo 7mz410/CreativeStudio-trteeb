@@ -581,7 +581,7 @@ fn images_resolve_in_order_and_roles_win() {
     new_doc(&mut s, 1);
     write(&data.join("doc.csv"), "Photo\ndocpic.png\n");
     exec(&mut s, "data.source.select", json!({"path": data.join("doc.csv")}));
-    exec(&mut s, "file.save", json!({"path": docs.join("layout.designcraft")}));
+    exec(&mut s, "file.save", json!({"path": docs.join("layout.trteeb")}));
     let frame = exec(&mut s, "frame.create", json!({"rect": [0.0, 0.0, 200.0, 100.0], "content": "graphic"}));
     exec(&mut s, "data.placeholder.add", json!({"field": "Photo", "role": "image", "item": frame["id"]}));
     exec(&mut s, "data.options", json!({"center": false, "linkImages": true, "fitting": "fitProportionally"}));
@@ -871,7 +871,7 @@ fn update_remove_preview_inline_rows_and_old_files() {
     assert!(texts(&s).iter().any(|t| t.contains("<<Name>>")));
 
     exec(&mut s, "data.preview", json!({"record": 2}));
-    let path = dir.join("saved.designcraft");
+    let path = dir.join("saved.trteeb");
     exec(&mut s, "file.save", json!({"path": path}));
     let saved = crate::cmd::from_bytes(&std::fs::read(&path).unwrap()).unwrap();
     assert!(!saved.stories.values().any(|st| st.text.contains("Grace")));
@@ -917,7 +917,7 @@ fn update_remove_preview_inline_rows_and_old_files() {
     assert!(msg.contains("too large"), "{msg}");
     assert_eq!(s.documents().len(), before);
 
-    let fresh = dir.join("fresh.designcraft");
+    let fresh = dir.join("fresh.trteeb");
     let mut s = Session::new();
     new_doc(&mut s, 1);
     exec(&mut s, "file.save", json!({"path": fresh}));
@@ -1015,7 +1015,7 @@ fn relative_path_and_reopen() {
     let mut s = Session::new();
     new_doc(&mut s, 1);
     exec(&mut s, "data.source.select", json!({"path": csv}));
-    let saved = a.join("layout.designcraft");
+    let saved = a.join("layout.trteeb");
     exec(&mut s, "file.save", json!({"path": saved}));
     let mut s2 = Session::new();
     exec(&mut s2, "file.open", json!({"path": saved}));

@@ -12,7 +12,7 @@ pub(crate) fn mime_for(name: &str) -> &'static str {
         Some("png") => "image/png",
         Some("jpg" | "jpeg") => "image/jpeg",
         Some("pdf") => "application/pdf",
-        Some("designcraft") => designcraft_format::MIME,
+        Some("trteeb" | "designcraft") => designcraft_format::MIME,
         Some("idml") => "application/vnd.adobe.indesign-idml-package",
         _ => "application/octet-stream",
     }

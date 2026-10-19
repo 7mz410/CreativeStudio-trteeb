@@ -219,6 +219,7 @@ fn open_filters(purpose: &str) -> &'static [OpenFilter] {
                     "md",
                     "xlsx",
                     "idml",
+                    "trteeb",
                     "designcraft",
                     "mp4",
                     "m4v",
@@ -238,8 +239,8 @@ fn open_filters(purpose: &str) -> &'static [OpenFilter] {
             OpenFilter { name: "Video and sound", extensions: &["mp4", "m4v", "mov", "webm", "mp3", "m4a", "wav", "ogg"] },
         ],
         _ => &[
-            OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["designcraft", "idml", "indd", "indt"] },
-            OpenFilter { name: "trteeb", extensions: &["designcraft"] },
+            OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["trteeb", "designcraft", "idml", "indd", "indt"] },
+            OpenFilter { name: "trteeb", extensions: &["trteeb", "designcraft"] },
             OpenFilter { name: "InDesign Markup (IDML)", extensions: &["idml"] },
             OpenFilter { name: "InDesign document or template (INDD, INDT)", extensions: &["indd", "indt"] },
             // Files saved without an extension; `file.open` tells the formats apart by content.
@@ -252,18 +253,18 @@ fn open_filters(purpose: &str) -> &'static [OpenFilter] {
 /// which takes type identifiers as well as extensions: `public.data` admits any file.
 const ALL_FILES: &str = if cfg!(target_os = "macos") { "public.data" } else { "*" };
 
-/// The extension of the file name a save dialog suggests (`Brochure.designcraft`), if it has one.
+/// The extension of the file name a save dialog suggests (`Brochure.trteeb`), if it has one.
 /// The dialog filters on it, so the macOS and Windows dialogs add it to a name typed without it.
 fn suggested_extension(name: &str) -> Option<&str> {
     std::path::Path::new(name).extension().and_then(|e| e.to_str()).filter(|e| !e.is_empty() && !e.contains(char::is_whitespace))
 }
 
 /// The file a save dialog's answer writes: `picked` with the suggested extension added when it has
-/// none (Linux dialogs don't add it). A document always ends in `.designcraft`, as `file.save`
+/// none (Linux dialogs don't add it). A document always ends in `.trteeb`, as `file.save`
 /// writes it.
 fn picked_save_path(picked: std::path::PathBuf, ext: Option<&str>) -> std::path::PathBuf {
     let Some(ext) = ext else { return picked };
-    if ext.eq_ignore_ascii_case("designcraft") {
+    if ext.eq_ignore_ascii_case("trteeb") {
         let p = picked.to_string_lossy();
         return designcraft_engine::cmd::with_document_extension(&p).into();
     }
@@ -588,7 +589,7 @@ mod tests {
         assert!(place.len() > 1, "the place dialog keeps a filter for each kind of file");
         assert!(place.iter().any(|filter| filter.extensions.contains(&"png")));
         let documents = super::open_filters("");
-        for ext in ["designcraft", "idml", "indd", "indt"] {
+        for ext in ["trteeb", "designcraft", "idml", "indd", "indt"] {
             assert!(documents.first().is_some_and(|filter| filter.extensions.contains(&ext)), "{ext} is missing from the first Open filter");
         }
         assert!(documents.last().is_some_and(|filter| filter.extensions == [super::ALL_FILES]), "files without an extension can be picked");
@@ -598,9 +599,9 @@ mod tests {
     fn save_dialog_answers_get_the_suggested_extension() {
         use std::path::PathBuf;
         let save = |picked: &str, name: &str| super::picked_save_path(PathBuf::from(picked), super::suggested_extension(name));
-        assert_eq!(save("/d/Brochure", "Untitled.designcraft"), PathBuf::from("/d/Brochure.designcraft"));
-        assert_eq!(save("/d/Brochure.idml", "Untitled.designcraft"), PathBuf::from("/d/Brochure.idml.designcraft"));
-        assert_eq!(save("/d/Brochure.designcraft", "Untitled.designcraft"), PathBuf::from("/d/Brochure.designcraft"));
+        assert_eq!(save("/d/Brochure", "Untitled.trteeb"), PathBuf::from("/d/Brochure.trteeb"));
+        assert_eq!(save("/d/Brochure.idml", "Untitled.trteeb"), PathBuf::from("/d/Brochure.idml.trteeb"));
+        assert_eq!(save("/d/Brochure.designcraft", "Untitled.trteeb"), PathBuf::from("/d/Brochure.trteeb"));
         assert_eq!(save("/d/Brochure", "Untitled.pdf"), PathBuf::from("/d/Brochure.pdf"));
         assert_eq!(save("/d/Brochure.txt", "Untitled.rtf"), PathBuf::from("/d/Brochure.txt"), "another export format is kept");
         assert_eq!(save("/d/Package", "Untitled 1.2 Folder"), PathBuf::from("/d/Package"), "a folder has no extension");

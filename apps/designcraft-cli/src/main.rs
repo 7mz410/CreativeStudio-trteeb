@@ -267,7 +267,7 @@ impl Export {
         Ok(match ext.as_deref() {
             None | Some("png" | "jpg" | "jpeg") => Export::Image,
             Some("pdf") => Export::Pdf,
-            Some("designcraft") => Export::Document,
+            Some("trteeb" | "designcraft") => Export::Document,
             Some("idml") => Export::Command("file.exportIdml"),
             Some("epub") => Export::Command("file.exportEpub"),
             Some("pptx") => Export::Pptx,

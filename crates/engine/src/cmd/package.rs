@@ -667,7 +667,7 @@ mod tests {
             s.execute("text.select", &json!({"story": r["story"], "anchor": a, "focus": b})).unwrap();
             s.execute("type.char", &json!({"fontFamily": family, "fontStyle": "Regular"})).unwrap();
         }
-        let src = dir.join("src").join("Fonts.designcraft");
+        let src = dir.join("src").join("Fonts.trteeb");
         s.execute("file.save", &json!({"path": src.to_string_lossy()})).unwrap();
         let mut s = Session::new();
         assert_eq!(s.execute("file.open", &json!({"path": src.to_string_lossy()})).unwrap()["documentFonts"], 2);

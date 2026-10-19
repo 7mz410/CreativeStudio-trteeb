@@ -241,7 +241,203 @@ def apply_packaging_names() -> list:
     return changed
 
 
+# trteeb saves documents as `.trteeb` (the same contents as upstream's `.designcraft`, which still
+# opens), with its own document icon in Finder. Applied as is, without the general rename. Each
+# (upstream text, our text) pair is skipped once our text is in the file.
+EXT_FILES = {
+    'crates/format/src/lib.rs': [
+        ('/// The file name extension of a DesignCraft document.\npub const EXTENSION: &str = "designcraft";\n',
+         '/// The file name extension of upstream DesignCraft documents: still opened.\n'
+         'pub const EXTENSION: &str = "designcraft";\n'
+         '/// The file name extension trteeb saves documents with (the same contents as `EXTENSION`).\n'
+         'pub const STUDIO_EXTENSION: &str = "trteeb";\n\n'
+         '/// Is `ext` (without the dot, any case) a document extension this app opens?\n'
+         'pub fn is_native_ext(ext: &str) -> bool {\n'
+         '    ext.eq_ignore_ascii_case(STUDIO_EXTENSION) || ext.eq_ignore_ascii_case(EXTENSION)\n'
+         '}\n'),
+    ],
+    'crates/engine/src/cmd/file.rs': [
+        ('/// `path` ending in `.designcraft`: the extension is added when it is missing or another one, so\n'
+         '/// the file opens from the file manager. A path without a file name is left for the write to fail.\n'
+         'pub fn with_document_extension(path: &str) -> String {\n'
+         '    let p = std::path::Path::new(path);\n'
+         '    let ext = p.extension().and_then(|e| e.to_str());\n'
+         '    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::EXTENSION)) {\n'
+         '        return path.to_string();\n'
+         '    }\n'
+         '    format!("{path}.{}", designcraft_format::EXTENSION)\n'
+         '}',
+         '/// `path` ending in `.trteeb`: the extension is added when it is missing or another one, so the\n'
+         '/// file opens from the file manager. An old `.designcraft` name takes the new extension. A path\n'
+         '/// without a file name is left for the write to fail.\n'
+         'pub fn with_document_extension(path: &str) -> String {\n'
+         '    let p = std::path::Path::new(path);\n'
+         '    let ext = p.extension().and_then(|e| e.to_str());\n'
+         '    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::STUDIO_EXTENSION)) {\n'
+         '        return path.to_string();\n'
+         '    }\n'
+         '    if ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::EXTENSION)) {\n'
+         '        return p.with_extension(designcraft_format::STUDIO_EXTENSION).to_string_lossy().into_owned();\n'
+         '    }\n'
+         '    format!("{path}.{}", designcraft_format::STUDIO_EXTENSION)\n'
+         '}'),
+        ('if !native && ext != designcraft_format::EXTENSION {', 'if !native && !designcraft_format::is_native_ext(&ext) {'),
+        ('without the .designcraft extension gets it', 'without the .trteeb extension gets it'),
+    ],
+    'crates/doc/src/vars.rs': [
+        ('format!("{}.designcraft", self.title)', 'format!("{}.trteeb", self.title)'),
+    ],
+    'apps/designcraft/src/main.rs': [
+        ('suggests (`Brochure.designcraft`)', 'suggests (`Brochure.trteeb`)'),
+        ('if ext.eq_ignore_ascii_case("designcraft") {', 'if ext.eq_ignore_ascii_case("trteeb") {'),
+        ('A document always ends in `.designcraft`', 'A document always ends in `.trteeb`'),
+        ('OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["designcraft", "idml", "indd", "indt"] },',
+         'OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["trteeb", "designcraft", "idml", "indd", "indt"] },'),
+        ('OpenFilter { name: "trteeb", extensions: &["designcraft"] },', 'OpenFilter { name: "trteeb", extensions: &["trteeb", "designcraft"] },'),
+        ('"idml",\n                    "designcraft",\n                    "mp4",', '"idml",\n                    "trteeb",\n                    "designcraft",\n                    "mp4",'),
+        ('for ext in ["designcraft", "idml", "indd", "indt"] {', 'for ext in ["trteeb", "designcraft", "idml", "indd", "indt"] {'),
+        ('"Untitled.designcraft"', '"Untitled.trteeb"'),
+        ('PathBuf::from("/d/Brochure.designcraft")', 'PathBuf::from("/d/Brochure.trteeb")'),
+        ('PathBuf::from("/d/Brochure.idml.designcraft")', 'PathBuf::from("/d/Brochure.idml.trteeb")'),
+    ],
+    'apps/designcraft-web/src/web.rs': [
+        ('const DOC_EXTS: &[&str] = &["designcraft", "idml", "indd", "indt"];', 'const DOC_EXTS: &[&str] = &["trteeb", "designcraft", "idml", "indd", "indt"];'),
+        ('"idml",\n    "designcraft",\n];', '"idml",\n    "trteeb",\n    "designcraft",\n];'),
+    ],
+    'apps/designcraft-web/src/graphics.rs': [
+        ('format!("{}.designcraft", ', 'format!("{}.trteeb", '),
+    ],
+    'apps/designcraft-web/src/browser_policy.rs': [
+        ('Some("designcraft") => designcraft_format::MIME,', 'Some("trteeb" | "designcraft") => designcraft_format::MIME,'),
+    ],
+    'apps/designcraft-cli/src/main.rs': [
+        ('Some("designcraft") => Export::Document,', 'Some("trteeb" | "designcraft") => Export::Document,'),
+    ],
+    'packaging/macos/Info.plist.in': [
+        ('<key>CFBundleTypeIconFile</key>\n      <string>DesignCraft</string>', '<key>CFBundleTypeIconFile</key>\n      <string>trteeb-document</string>'),
+        ('<key>UTTypeIconFile</key>\n      <string>DesignCraft</string>', '<key>UTTypeIconFile</key>\n      <string>trteeb-document</string>'),
+        ('<array><string>designcraft</string></array>', '<array><string>trteeb</string><string>designcraft</string></array>'),
+        ('saving writes a .designcraft file', 'saving writes a .trteeb file'),
+    ],
+    'packaging/macos/package.sh': [
+        ('cp "$ROOT/assets/app-icon/designcraft.icns" "$APP/Contents/Resources/DesignCraft.icns"\n',
+         'cp "$ROOT/assets/app-icon/designcraft.icns" "$APP/Contents/Resources/DesignCraft.icns"\n'
+         'cp "$ROOT/assets/app-icon/trteeb-document.icns" "$APP/Contents/Resources/trteeb-document.icns"\n'),
+    ],
+    'studio/CHANGES.md': [
+        ('Crate names, settings folders and the file format keep their upstream names.',
+         'Crate names and settings folders keep their upstream names. Documents save as `.trteeb` (`STUDIO_EXTENSION`\n'
+         '  in `crates/format`); `.designcraft` files still open, and the file format itself is unchanged.'),
+        ('- App icon: the trteeb star on navy (`assets/app-icon/`).',
+         '- App icon: the trteeb star on navy (`assets/app-icon/`). Document icon for `.trteeb` files:\n'
+         '  `assets/app-icon/trteeb-document.icns`, from `file icons/trteeb.svg`.'),
+    ],
+}
+# Files this script creates (skipped when they exist).
+EXT_NEW_FILES = {
+    'crates/engine/tests/trteeb_extension.rs': '''//! trteeb saves documents as `.trteeb`, and upstream's `.designcraft` files still open.
+//! Written by studio/rebrand.py.
+
+use designcraft_engine::{Session, cmd};
+use serde_json::json;
+
+#[test]
+fn save_writes_trteeb_and_designcraft_still_opens() {
+    assert_eq!(cmd::with_document_extension("/d/Brochure"), "/d/Brochure.trteeb");
+    assert_eq!(cmd::with_document_extension("/d/Brochure.designcraft"), "/d/Brochure.trteeb");
+
+    let dir = std::env::temp_dir().join(format!("trteeb-extension-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let saved = dir.join("doc.trteeb");
+    let mut session = Session::new();
+    session.execute("file.new", &json!({})).unwrap();
+    session.execute("file.saveAs", &json!({"path": saved.to_str().unwrap()})).unwrap();
+    assert!(saved.exists(), "the save writes the .trteeb file");
+
+    let old = dir.join("old.designcraft");
+    std::fs::copy(&saved, &old).unwrap();
+    let mut reopened = Session::new();
+    reopened.execute("file.open", &json!({"path": old.to_str().unwrap()})).expect("a .designcraft file still opens");
+    let _ = std::fs::remove_dir_all(&dir);
+}
+''',
+}
+# Icon and asset table: the document icon for .trteeb files, rendered from the file icon.
+DOC_ICON_SVG = 'assets/app-icon/trteeb-document.svg'
+DOC_ICON = 'assets/app-icon/trteeb-document.icns'
+DOC_ICON_SOURCE = ROOT.parent / 'file icons/trteeb.svg'
+ASSET_ROWS = [
+    f'| `{DOC_ICON_SVG}` | Hamza Abu Ayyash (Creative Studio) | copy of `file icons/trteeb.svg` | MIT OR Apache-2.0 (`assets/app-icon/LICENSE.txt`) | Document icon for `.trteeb` files (see `assets/app-icon/README.md`) |',
+    f'| `{DOC_ICON}` | Hamza Abu Ayyash (Creative Studio) | rendered from `{DOC_ICON_SVG}` with rsvg-convert, packed with iconutil by `studio/rebrand.py` | MIT OR Apache-2.0 (`assets/app-icon/LICENSE.txt`) | Document icon for `.trteeb` files (macOS document type; `packaging/macos/package.sh` copies it into the app) |',
+]
+
+
+def document_icon() -> list:
+    import shutil
+    import tempfile
+    changed = []
+    svg = ROOT / DOC_ICON_SVG
+    if not svg.exists():
+        if not DOC_ICON_SOURCE.exists():
+            print(f'warning: {DOC_ICON_SOURCE} not found; no trteeb document icon')
+            return changed
+        svg.write_bytes(DOC_ICON_SOURCE.read_bytes())
+        changed.append(svg)
+    icns = ROOT / DOC_ICON
+    if not icns.exists():
+        if not (shutil.which('rsvg-convert') and shutil.which('iconutil')):
+            print('warning: rsvg-convert or iconutil missing; trteeb-document.icns not made')
+            return changed
+        with tempfile.TemporaryDirectory() as tmp:
+            iconset = Path(tmp) / 'trteeb-document.iconset'
+            iconset.mkdir()
+            for base in (16, 32, 128, 256, 512):
+                for scale in (1, 2):
+                    px = base * scale
+                    name = f'icon_{base}x{base}' + ('@2x' if scale == 2 else '') + '.png'
+                    subprocess.run(['rsvg-convert', '-w', str(px), '-h', str(px), str(svg), '-o', str(iconset / name)], check=True)
+            subprocess.run(['iconutil', '-c', 'icns', '-o', str(icns), str(iconset)], check=True)
+        changed.append(icns)
+    assets = ROOT / 'ASSETS.md'
+    text = assets.read_text(encoding='utf-8')
+    if DOC_ICON_SVG not in text:
+        lines = text.split('\n')
+        at = next(i for i, l in enumerate(lines) if l.startswith('| `assets/app-icon/designcraft.svg` '))
+        lines[at + 1:at + 1] = ASSET_ROWS
+        assets.write_text('\n'.join(lines), encoding='utf-8')
+        changed.append(assets)
+    return changed
+
+
+def apply_ext() -> list:
+    changed = []
+    for rel, pairs in EXT_FILES.items():
+        path = ROOT / rel
+        src = path.read_text(encoding='utf-8')
+        out = src
+        for a, b in pairs:
+            if b in out:
+                continue  # applied on an earlier run
+            if a not in out:
+                print(f'warning: {rel}: text not found (did upstream change it?): {a[:70]!r}')
+                continue
+            out = out.replace(a, b)
+        if out != src:
+            path.write_text(out, encoding='utf-8')
+            changed.append(path)
+    for rel, text in EXT_NEW_FILES.items():
+        path = ROOT / rel
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding='utf-8')
+            changed.append(path)
+    changed += document_icon()
+    return changed
+
+
 if __name__ == '__main__':
     main()
     for _p in apply_packaging_names():
+        print('rebranded', _p.relative_to(ROOT))
+    for _p in apply_ext():
         print('rebranded', _p.relative_to(ROOT))

@@ -1602,7 +1602,7 @@ mod tests {
     #[test]
     fn a_document_taken_over_remembers_its_file() {
         let root = tempfile::tempdir().unwrap();
-        let file = root.path().join("layout.designcraft");
+        let file = root.path().join("layout.trteeb");
         let recovery = root.path().join("recovery");
         let left = recovery.join("run-7-0");
         std::fs::create_dir_all(&left).unwrap();
@@ -1718,7 +1718,7 @@ mod file_tests {
     fn revert_and_save_a_copy() {
         let dir = std::env::temp_dir().join(format!("dc-revert-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
-        let (a, copy) = (dir.join("a.designcraft"), dir.join("copy.designcraft"));
+        let (a, copy) = (dir.join("a.trteeb"), dir.join("copy.trteeb"));
         let mut s = Session::new();
         s.execute("file.new", &json!({})).unwrap();
         assert!(s.execute("file.revert", &json!({})).is_err(), "never saved");

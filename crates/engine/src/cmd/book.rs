@@ -372,11 +372,11 @@ mod tests {
         let mut s = Session::new();
         s.execute("book.new", &json!({"path": p("Field Guide.dcbook")})).unwrap();
         let chapters = [
-            ("a.designcraft", json!({"style": "upperRoman"})),
-            ("b.designcraft", json!({"source": "sameAsPrevious"})),
-            ("c.designcraft", json!({})),
-            ("d.designcraft", json!({"start": 7, "style": "lowerLetters"})),
-            ("e.designcraft", json!({})),
+            ("a.trteeb", json!({"style": "upperRoman"})),
+            ("b.trteeb", json!({"source": "sameAsPrevious"})),
+            ("c.trteeb", json!({})),
+            ("d.trteeb", json!({"start": 7, "style": "lowerLetters"})),
+            ("e.trteeb", json!({})),
         ];
         for (name, numbering) in &chapters {
             s.execute("file.new", &json!({})).unwrap();
@@ -391,9 +391,9 @@ mod tests {
         let r = s.execute("book.paginate", &json!({})).unwrap();
         // Same as previous takes the number, written in the document's own style.
         assert_eq!(r["chapters"], json!(["I", "1", "2", "g", "8"]));
-        assert_eq!(super::load(&p("e.designcraft")).unwrap().settings.chapter_number, 8);
+        assert_eq!(super::load(&p("e.trteeb")).unwrap().settings.chapter_number, 8);
         // An open chapter (e) names its book.
-        s.execute("file.open", &json!({"path": p("e.designcraft")})).unwrap();
+        s.execute("file.open", &json!({"path": p("e.trteeb")})).unwrap();
         assert_eq!(s.execute("layout.chapterNumbering", &json!({})).unwrap()["book"], "Field Guide");
         std::fs::remove_dir_all(&dir).ok();
     }
@@ -404,22 +404,22 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let p = |n: &str| dir.join(n).to_string_lossy().to_string();
         let mut s = Session::new();
-        for (name, pages, style) in [("a.designcraft", 3, "Chapter Head"), ("b.designcraft", 2, "Other")] {
+        for (name, pages, style) in [("a.trteeb", 3, "Chapter Head"), ("b.trteeb", 2, "Other")] {
             s.execute("file.new", &json!({"pages": pages})).unwrap();
             s.execute("style.paragraph.create", &json!({"name": style, "chars": {"size": 20}})).unwrap();
             s.execute("file.saveAs", &json!({"path": p(name)})).unwrap();
             s.execute("file.close", &json!({})).unwrap();
         }
         s.execute("book.new", &json!({"path": p("book.dcbook")})).unwrap();
-        s.execute("book.add", &json!({"path": p("a.designcraft")})).unwrap();
-        s.execute("book.add", &json!({"path": p("b.designcraft")})).unwrap();
+        s.execute("book.add", &json!({"path": p("a.trteeb")})).unwrap();
+        s.execute("book.add", &json!({"path": p("b.trteeb")})).unwrap();
         let l = s.execute("book.list", &json!({})).unwrap();
         assert_eq!(l["documents"][1]["firstPage"], 4);
         assert_eq!(s.execute("book.paginate", &json!({})).unwrap()["pages"], 5);
-        let b = super::load(&p("b.designcraft")).unwrap();
+        let b = super::load(&p("b.trteeb")).unwrap();
         assert_eq!(b.page_name(0), "4", "continues after the first document");
         assert_eq!(s.execute("book.syncStyles", &json!({})).unwrap()["synced"], 1);
-        assert!(super::load(&p("b.designcraft")).unwrap().styles.para("Chapter Head").is_some());
+        assert!(super::load(&p("b.trteeb")).unwrap().styles.para("Chapter Head").is_some());
         let r = s.execute("book.exportPdf", &json!({})).unwrap();
         assert_eq!(r["pages"], 5);
         let bytes = super::super::file::base64_decode(r["base64"].as_str().unwrap());

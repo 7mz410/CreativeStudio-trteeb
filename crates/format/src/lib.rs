@@ -112,8 +112,15 @@ fn save_with_large_entries_from(doc: &Document, preview: Option<&[u8]>, large_en
     Ok(buf.into_inner())
 }
 
-/// The file name extension of a DesignCraft document.
+/// The file name extension of upstream DesignCraft documents: still opened.
 pub const EXTENSION: &str = "designcraft";
+/// The file name extension trteeb saves documents with (the same contents as `EXTENSION`).
+pub const STUDIO_EXTENSION: &str = "trteeb";
+
+/// Is `ext` (without the dot, any case) a document extension this app opens?
+pub fn is_native_ext(ext: &str) -> bool {
+    ext.eq_ignore_ascii_case(STUDIO_EXTENSION) || ext.eq_ignore_ascii_case(EXTENSION)
+}
 
 /// Whether `bytes` are a DesignCraft document package: a zip holding `document.json`. Files
 /// without an extension are recognised by this (the legacy JSON form is too generic to sniff).

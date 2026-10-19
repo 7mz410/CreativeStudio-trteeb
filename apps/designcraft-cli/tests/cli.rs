@@ -11,7 +11,7 @@ fn cli() -> Command {
 fn script_from_stdin_with_references_saves_and_exports() {
     let dir = std::env::temp_dir().join(format!("dc-cli-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
-    let (doc, png) = (dir.join("a.designcraft"), dir.join("a.png"));
+    let (doc, png) = (dir.join("a.trteeb"), dir.join("a.png"));
     let mut child = cli()
         .args(["script", "-", "--save", doc.to_str().unwrap(), "--export", png.to_str().unwrap()])
         .stdin(Stdio::piped())
@@ -48,7 +48,7 @@ fn export_writes_the_file_type_its_extension_names() {
         ("A.JPEG", b"\xFF\xD8"),
         ("a.pdf", b"%PDF"),
         ("A.PDF", b"%PDF"),
-        ("a.designcraft", b"PK"),
+        ("a.trteeb", b"PK"),
         ("a.idml", b"PK"),
         ("a.epub", b"PK"),
         ("a.html", b"<!DOCTYPE html>"),
@@ -83,7 +83,7 @@ fn export_writes_the_file_type_its_extension_names() {
 fn export_to_an_unknown_file_type_is_an_error() {
     let dir = std::env::temp_dir().join(format!("dc-cli-unknown-{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
-    let (png, doc, unknown) = (dir.join("a.png"), dir.join("a.designcraft"), dir.join("a.xyz"));
+    let (png, doc, unknown) = (dir.join("a.png"), dir.join("a.trteeb"), dir.join("a.xyz"));
     let (png, doc, unknown) = (png.to_str().unwrap(), doc.to_str().unwrap(), unknown.to_str().unwrap());
     for args in [["run", "--sample", "--export", png, "--export", unknown], ["script", "-", "--save", doc, "--export", unknown]] {
         let out = cli().args(args).output().unwrap();
@@ -354,18 +354,18 @@ fn mcp_automation_roots_confine_the_server() {
     let (work, elsewhere) = (base.join("work"), base.join("elsewhere"));
     std::fs::create_dir_all(&work).unwrap();
     std::fs::create_dir_all(&elsewhere).unwrap();
-    make_document(&work.join("in.designcraft"));
-    make_document(&elsewhere.join("secret.designcraft"));
+    make_document(&work.join("in.trteeb"));
+    make_document(&elsewhere.join("secret.trteeb"));
     let work_s = work.to_str().unwrap();
-    let secret = elsewhere.join("secret.designcraft").to_str().unwrap().to_string();
+    let secret = elsewhere.join("secret.trteeb").to_str().unwrap().to_string();
 
     // Both spellings of the flags; inside works, outside is refused with a readable message.
     let read_flag = format!("--automation-read-root={work_s}");
     let calls = [
-        ("open_document", serde_json::json!({"path": work.join("in.designcraft").to_str().unwrap()})),
+        ("open_document", serde_json::json!({"path": work.join("in.trteeb").to_str().unwrap()})),
         ("open_document", serde_json::json!({"path": secret})),
-        ("save_document", serde_json::json!({"path": work.join("saved.designcraft").to_str().unwrap()})),
-        ("save_document", serde_json::json!({"path": elsewhere.join("saved.designcraft").to_str().unwrap()})),
+        ("save_document", serde_json::json!({"path": work.join("saved.trteeb").to_str().unwrap()})),
+        ("save_document", serde_json::json!({"path": elsewhere.join("saved.trteeb").to_str().unwrap()})),
         ("export_png", serde_json::json!({"path": elsewhere.join("page.png").to_str().unwrap()})),
         ("render_page", serde_json::json!({"path": elsewhere.join("render.png").to_str().unwrap()})),
     ];
@@ -376,12 +376,12 @@ fn mcp_automation_roots_confine_the_server() {
     assert_eq!(replies[1]["result"]["isError"], true);
     assert!(text(&replies[1]).contains("outside the read root"), "{}", text(&replies[1]));
     assert_eq!(replies[2]["result"]["isError"], false, "{}", replies[2]);
-    assert!(work.join("saved.designcraft").exists());
+    assert!(work.join("saved.trteeb").exists());
     for reply in &replies[3..] {
         assert_eq!(reply["result"]["isError"], true, "{reply}");
         assert!(text(reply).contains("outside the write root"), "{}", text(reply));
     }
-    for name in ["saved.designcraft", "page.png", "render.png"] {
+    for name in ["saved.trteeb", "page.png", "render.png"] {
         assert!(!elsewhere.join(name).exists(), "{name} was written outside the write root");
     }
 

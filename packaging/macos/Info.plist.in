@@ -57,14 +57,14 @@
       <key>LSHandlerRank</key>
       <string>Owner</string>
       <key>CFBundleTypeIconFile</key>
-      <string>DesignCraft</string>
+      <string>trteeb-document</string>
       <key>LSItemContentTypes</key>
       <array><string>ai.storyteller.designcraft.document</string></array>
     </dict>
     <dict>
       <key>CFBundleTypeName</key>
       <string>IDML Document</string>
-      <!-- Opens as a new, unsaved document; saving writes a .designcraft file. -->
+      <!-- Opens as a new, unsaved document; saving writes a .trteeb file. -->
       <key>CFBundleTypeRole</key>
       <string>Viewer</string>
       <key>LSHandlerRank</key>
@@ -89,11 +89,11 @@
         <string>public.composite-content</string>
       </array>
       <key>UTTypeIconFile</key>
-      <string>DesignCraft</string>
+      <string>trteeb-document</string>
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.filename-extension</key>
-        <array><string>designcraft</string></array>
+        <array><string>trteeb</string><string>designcraft</string></array>
         <key>public.mime-type</key>
         <array><string>application/x-designcraft</string></array>
       </dict>
