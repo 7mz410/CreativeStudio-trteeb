@@ -2,9 +2,10 @@
 //! compaction a save applies (duplicates merged, unused assets left out).
 //!
 //! An asset holds what is shared by every placement of a file (bytes, link, type, the PDF page
-//! shown); each placement's frame data (transform, crop, fitting) lives on its [`Graphic`].
+//! and crop shown); each placement's frame data (transform, crop, fitting) lives on its [`Graphic`].
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::hash::BuildHasher;
 use std::sync::Arc;
 
 use crate::story::Story;
@@ -15,12 +16,12 @@ use crate::{Asset, AssetId, Content, Document, Item};
 const MAX_DEPTH: usize = 64;
 
 impl Asset {
-    /// Whether `other` holds the same file: the same type, page, link and bytes. Files at
+    /// Whether `other` holds the same file: the same type, PDF page and crop, link and bytes. Files at
     /// different paths stay apart even with identical bytes, since each can be updated or
     /// relinked on its own. Assets without bytes (a link that couldn't be read) are the same only
     /// when they link to the same path.
     pub fn same_file(&self, other: &Asset) -> bool {
-        if self.mime != other.mime || self.page != other.page {
+        if self.mime != other.mime || self.page != other.page || self.pdf_crop != other.pdf_crop {
             return false;
         }
         if self.link != other.link {
@@ -246,10 +247,19 @@ impl Document {
         if !self.asset_refs(&mut |_| {}) {
             return 0;
         }
-        let mut reps: HashMap<(usize, &str, u32), Vec<&Arc<Asset>>> = HashMap::new();
+        let fingerprint = std::collections::hash_map::RandomState::new();
+        let mut hashes = HashMap::new();
+        let mut reps: HashMap<_, Vec<&Arc<Asset>>> = HashMap::new();
         let mut map = HashMap::new();
         for a in self.assets.values() {
-            let bucket = reps.entry((a.data.len(), a.mime.as_str(), a.page)).or_default();
+            // Empty, unlinked assets never compare equal. Don't build a quadratic bucket
+            // of them, and hash a shared immutable buffer only once per compaction.
+            if a.data.is_empty() && a.link.is_none() {
+                continue;
+            }
+            let hash = *hashes.entry(Arc::as_ptr(&a.data)).or_insert_with(|| fingerprint.hash_one(a.data.as_slice()));
+            let bucket = reps.entry((hash, a.mime.as_str(), a.page, a.link.as_deref())).or_default();
+            // A fingerprint only selects candidates; equality still checks the actual file.
             match bucket.iter().find(|r| r.same_file(a)) {
                 Some(r) => {
                     map.insert(a.id, r.id);
@@ -277,7 +287,70 @@ mod tests {
     use designcraft_geom::{Affine, Rect, shapes};
 
     fn asset(id: u64, data: &[u8]) -> Asset {
-        Asset { id: AssetId(id), name: "p.png".into(), mime: "image/png".into(), link: None, data: Arc::new(data.to_vec()), pixels: None, page: 0 }
+        Asset { id: AssetId(id), name: "p.png".into(), mime: "image/png".into(), data: Arc::new(data.to_vec()), ..Default::default() }
+    }
+
+    #[test]
+    fn equal_size_assets_keep_distinct_contents_and_merge_exact_copies() {
+        let mut d = Document::new(&Default::default());
+        for id in 1..=256u64 {
+            let mut bytes = vec![42; 1024];
+            bytes[1016..].copy_from_slice(&id.to_le_bytes());
+            d.assets.insert(AssetId(id), Arc::new(asset(id, &bytes)));
+            d.assets.insert(AssetId(id + 256), Arc::new(asset(id + 256, &bytes)));
+        }
+        assert_eq!(d.merge_duplicate_assets(), 256);
+        assert_eq!(d.assets.len(), 256);
+        for id in 1..=256u64 {
+            assert_eq!(d.assets[&AssetId(id)].data[1016..], id.to_le_bytes());
+        }
+    }
+
+    #[test]
+    fn compaction_preserves_asset_identity_and_missing_data_rules() {
+        let mut d = Document::new(&Default::default());
+        let mut cases = vec![asset(1, b"same"), asset(2, b"same"), asset(3, b"same"), asset(4, b"same")];
+        cases[1].mime = "application/pdf".into();
+        cases[2].page = 1;
+        cases[3].link = Some("/linked.png".into());
+        cases.extend([asset(5, b""), asset(6, b""), asset(7, b""), asset(8, b"")]);
+        cases[6].link = Some("/missing.png".into());
+        cases[7].link = Some("/missing.png".into());
+        for a in cases {
+            d.assets.insert(a.id, Arc::new(a));
+        }
+        assert_eq!(d.merge_duplicate_assets(), 1);
+        assert_eq!(d.assets.keys().copied().collect::<Vec<_>>(), (1..=7).map(AssetId).collect::<Vec<_>>());
+    }
+
+    /// Two crops of one PDF page are two assets: merging them would show one crop in both frames.
+    #[test]
+    fn pdf_assets_with_different_crops_stay_apart() {
+        let mut d = Document::new(&Default::default());
+        let pdf = |id: u64, pdf_crop: crate::PdfCrop| Asset { mime: "application/pdf".into(), pdf_crop, ..asset(id, b"%PDF-") };
+        let crop = d.add_asset(pdf(1, crate::PdfCrop::Crop));
+        let trim = d.add_asset(pdf(2, crate::PdfCrop::Trim));
+        assert_ne!(crop, trim);
+        assert_eq!(d.add_asset(pdf(3, crate::PdfCrop::Trim)), trim);
+        assert_eq!(d.merge_duplicate_assets(), 0);
+        assert_eq!(d.assets.len(), 2);
+    }
+
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    #[ignore = "manual bounded timing comparison; no timing assertion"]
+    fn equal_size_assets_timing() {
+        for count in [500, 1000, 2000] {
+            let mut d = Document::new(&Default::default());
+            for id in 1..=count as u64 {
+                let mut bytes = vec![42; 8192];
+                bytes[8184..].copy_from_slice(&id.to_le_bytes());
+                d.assets.insert(AssetId(id), Arc::new(asset(id, &bytes)));
+            }
+            let start = std::time::Instant::now();
+            assert_eq!(d.merge_duplicate_assets(), 0);
+            eprintln!("{count} distinct 8 KiB assets: {:?}", start.elapsed());
+        }
     }
 
     fn graphic_item(id: u64, asset: u64, crop: f64) -> Item {
@@ -286,9 +359,12 @@ mod tests {
             asset: AssetId(asset),
             size: (10.0, 10.0),
             xf: Affine::translate((crop, 0.0)),
+            clip: None,
             auto_fit: Default::default(),
             fit_align: 4,
             crop: [crop; 4],
+            wrap: Default::default(),
+            fill: Default::default(),
         });
         it
     }
@@ -300,6 +376,13 @@ mod tests {
         let b = d.add_asset(asset(2, b"same"));
         let c = d.add_asset(asset(3, b"diff"));
         let p = d.add_asset(Asset { page: 1, ..asset(4, b"same") });
+        // One PDF page shown with two crop boxes: two assets (the box is the asset's).
+        let pdf = |id, pdf_crop| Asset { mime: "application/pdf".into(), pdf_crop, ..asset(id, b"%PDF") };
+        let crop = d.add_asset(pdf(9, crate::PdfCrop::Crop));
+        let art = d.add_asset(pdf(10, crate::PdfCrop::Art));
+        assert_ne!(crop, art);
+        assert_eq!(d.add_asset(pdf(11, crate::PdfCrop::Art)), art);
+        d.assets.retain(|id, _| ![crop, art].contains(id));
         assert_eq!(a, b);
         assert_ne!(a, c);
         assert_ne!(a, p);

@@ -64,7 +64,7 @@ RULES = [
     ('crates/ui-egui/src/about.rs', 'const MARK_PATH: &str = "M104.28,49.49L81.55,0h-31.23l-3.17,4.76L14.75,53.63,0,75.85l21.55,21.55,63.79-36.94,16.99,37.04,14.01-21.74-12.06-26.27ZM32.89,65.66l32.42-48.87,10.91,23.77-43.32,25.09Z";',
      'const MARK_PATH: &str = ""; // Creative Studio: the mark is crate::studio_mark'),
     # About: no Discord, Creative Studio wording, our sibling apps on their subdomains.
-    ('crates/ui-egui/src/about.rs', '''            if discord_button(ui, "Join the ArtCraft Discord", vec2(300.0, 40.0)) {
+    ('crates/ui-egui/src/about.rs', '''            if discord_button(ui, crate::i18n::tr(&app.ui.language, "Join the ArtCraft Discord"), vec2(300.0, 40.0)) {
                 open = Some("discord");
             }
             ui.add_space(4.0);
@@ -73,25 +73,25 @@ RULES = [
                 egui::RichText::new(crate::i18n::tr(&app.ui.language, "discord.gg/artcraft — help, feedback and show-and-tell"))
                     .size(11.0)
                     .color(t.text_dim),
-            ));
-            ui.add_space(14.0);''', '            ui.add_space(14.0);'),
+            ));''', '            // No Discord button here: the upstream community is in the Help menu.'),
     ('crates/ui-egui/src/about.rs', '[("DesignCraft page", "appPage"), ("GitHub", "github"), ("getartcraft.com", "website"), ("Report an issue", "issues")]',
      '[("DesignCraft page", "appPage"), ("GitHub", "github"), ("studio.creative.ps", "website"), ("Report an issue", "issues")]'),
     ('crates/ui-egui/src/about.rs', 'let url = format!("{}/apps/{slug}", links::WEBSITE);', 'let url = format!("https://{slug}.studio.creative.ps");'),
     ('crates/ui-egui/src/about.rs', '"Part of the ArtCraft suite of open creative tools."', '"Part of the Creative Studio suite of open creative tools."'),
     ('crates/ui-egui/src/about.rs', '"More ArtCraft apps"', '"More Creative Studio apps"'),
     # Top bar and start screen: no Discord button; the card introduces Creative Studio.
-    ('crates/ui-egui/src/chrome.rs', '''                        // Always one click away: the ArtCraft community Discord.
-                        if crate::about::discord_button(ui, "Discord", vec2(78.0, 22.0)) {
-                            let _ = app.run("help.discord", json!({}));
-                        }
-''', ''),
+    ('crates/ui-egui/src/chrome.rs', '''                            // Always one click away: the ArtCraft community Discord.
+                            if crate::about::discord_button(ui, "Discord", vec2(78.0, 22.0)) {
+                                let _ = app.run("help.discord", json!({}));
+                            }
+''', '                            // No Discord button in the app bar: the Help menu has the upstream community.\n'),
+    # Start screen: the Discord button on the right of the card.
     ('crates/ui-egui/src/chrome.rs', '''            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if crate::about::discord_button(ui, crate::i18n::tr(&app.ui.language, "Join our Discord"), vec2(190.0, 38.0)) {
+                if crate::about::discord_button(ui, crate::i18n::tr(&app.ui.language, "Join our Discord"), BUTTON) {
                     let _ = app.run("help.discord", json!({}));
                 }
             });
-''', ''),
+''', '            // No Discord button on the start screen (the Help menu has the upstream community).\n'),
     ('crates/ui-egui/src/chrome.rs', '"Join the ArtCraft community"', '"Creative Studio"'),
     ('crates/ui-egui/src/chrome.rs', '"Get help, share your layouts and shape what we build next."', '"Part of the Creative Studio suite of open creative tools."'),
     ('crates/ui-egui/src/chrome.rs', '[("DesignCraft page", "help.appPage"), ("GitHub", "help.github"), ("getartcraft.com", "help.website")]',
@@ -105,6 +105,10 @@ RULES = [
     # Web page.
     ('apps/designcraft-web/index.html', '<title>DesignCraft</title>', f'<title>{NAME}</title>'),
     ('apps/designcraft-web/index.html', 'Loading DesignCraft&hellip;', f'Loading {NAME}&hellip;', 'ss-scene'),  # or the splash
+    # Graphics help text links to the README, which is ours now.
+    ('apps/designcraft/src/gpu.rs', 'https://github.com/storytold/designcraft/blob/main/README.md', f'{REPO}/blob/main/README.md'),
+    # The command list in the engine: the app's own links.
+    ('crates/engine/src/cmd/inspect.rs', '(ArtCraft Discord, website, DesignCraft page and repository)', '(upstream Discord, Creative Studio website, trteeb page and repository)'),
     # macOS bundle.
     ('packaging/macos/Info.plist.in', '<string>ai.storyteller.designcraft</string>', '<string>ps.creative.studio.trteeb</string>'),
 ]
@@ -112,6 +116,7 @@ RULES = [
 LITERALS = [
     ('DesignCraft page', 'trteeb page'),
     ('Join the ArtCraft Discord', 'Upstream community on Discord'),
+    ('ArtCraft', 'Creative Studio'),  # the suite's name (URLs are lowercase and untouched)
 ]
 STRING = re.compile(r'"(?:[^"\\\n]|\\.)*"')
 
@@ -134,13 +139,15 @@ def apply_rules() -> list:
         renamed = STRING.sub(lambda m: rename(m.group(0), NAME), a)
         if a not in s and renamed in s:
             a = renamed  # the general rename got there first
-        if a not in s or (b and a in b and b in s):
-            if not b or b in s or STRING.sub(lambda m: rename(m.group(0), NAME), b) in s:
-                continue  # already applied
-            print(f'warning: {rel}: upstream text not found (did upstream change it?): {a[:70]!r}')
+        if a in s:
+            if b and a in b and b in s:
+                continue  # a is part of b and b is in: applied
+            p.write_text(s.replace(a, b), encoding='utf-8')
+            changed.append(rel)
             continue
-        p.write_text(s.replace(a, b), encoding='utf-8')
-        changed.append(rel)
+        if b and (b in s or STRING.sub(lambda m: rename(m.group(0), NAME), b) in s):
+            continue  # applied on an earlier run
+        print(f'warning: {rel}: upstream text not found (did upstream change it?): {a[:70]!r}')
     about = ROOT / 'crates/ui-egui/src/about.rs'
     s = about.read_text(encoding='utf-8')
     o = re.sub(r'pub const SIBLINGS: &\[\(&str, &str, &str\)\] = &\[.*?\];', lambda m: SIBLINGS, s, count=1, flags=re.S)
@@ -174,10 +181,16 @@ def write_mark() -> bool:
     return True
 
 
+# Files whose names are where user data lives on disk: never renamed (their tests pin the paths).
+PERSISTED = {'apps/designcraft/src/profile.rs'}
+
+
 def rename_literals() -> list:
     changed = []
     files = list((ROOT / 'crates/ui-egui').rglob('*.rs')) + list((ROOT / 'apps').rglob('*.rs'))
     for p in files:
+        if p.relative_to(ROOT).as_posix() in PERSISTED:
+            continue
         name = NAME_AR if p.name == 'ar.rs' else NAME
         s = p.read_text(encoding='utf-8')
         o = STRING.sub(lambda m: rename(m.group(0), name), s)
