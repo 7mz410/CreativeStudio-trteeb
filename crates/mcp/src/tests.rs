@@ -338,7 +338,7 @@ fn files_place_and_export() {
     assert_eq!(r["isError"], false);
     assert!(std::fs::read(tmp("render.png")).unwrap().starts_with(PNG_MAGIC));
 
-    let doc_path = tmp("saved.designcraft");
+    let doc_path = tmp("saved.trteeb");
     let saved = ok(&mut s, "save_document", json!({"path": doc_path}));
     assert_eq!(saved["path"], doc_path.to_string_lossy().as_ref());
     let opened = ok(&mut s, "open_document", json!({"path": doc_path}));

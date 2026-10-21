@@ -1897,7 +1897,7 @@ mod tests {
     #[test]
     fn closing_with_save_writes_the_file_then_closes() {
         let mut app = app_with_unsaved_document();
-        let path = std::env::temp_dir().join(format!("designcraft-close-test-{}.designcraft", std::process::id()));
+        let path = std::env::temp_dir().join(format!("designcraft-close-test-{}.trteeb", std::process::id()));
         app.run("file.saveAs", json!({"path": path})).unwrap();
         let saved = std::fs::metadata(&path).unwrap().len();
         app.run("frame.create", json!({"rect": [200, 200, 300, 300]})).unwrap();
@@ -2103,7 +2103,7 @@ mod tests {
         second_unsaved_document(&mut app);
         let uids: Vec<_> = app.session.documents().iter().map(|d| d.uid).collect();
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("saved.designcraft");
+        let path = directory.path().join("saved.trteeb");
         let chosen = path.to_string_lossy().to_string();
         app.services.pick_save = Some(Box::new(move |_| Some(chosen.clone())));
         app.session.recovery_dir = Some(directory.path().join("recovery"));
@@ -2187,7 +2187,7 @@ mod tests {
         let mut app = app_with_unsaved_document();
         second_unsaved_document(&mut app);
         let first = app.session.documents()[0].uid;
-        let path = std::env::temp_dir().join(format!("designcraft-quit-save-{}-{first}.designcraft", std::process::id()));
+        let path = std::env::temp_dir().join(format!("designcraft-quit-save-{}-{first}.trteeb", std::process::id()));
         let picked = path.to_string_lossy().to_string();
         app.services.pick_save = Some(Box::new(move |_| Some(picked.clone())));
         quit_frame(&mut app, &ctx, true);
@@ -2240,7 +2240,7 @@ mod tests {
         let mut app = app_with_unsaved_document();
         second_unsaved_document(&mut app);
         let first = app.session.documents()[0].uid;
-        let path = std::env::temp_dir().join(format!("designcraft-quit-uid-{}-{first}.designcraft", std::process::id()));
+        let path = std::env::temp_dir().join(format!("designcraft-quit-uid-{}-{first}.trteeb", std::process::id()));
         let picked = path.to_string_lossy().to_string();
         app.services.pick_save = Some(Box::new(move |_| Some(picked.clone())));
         quit_frame(&mut app, &ctx, true);
@@ -2361,7 +2361,7 @@ mod tests {
             f.over.font_family = Some("Unavailable Test Family".into());
             f.over.font_style = Some("Regular".into());
         });
-        let path = std::env::temp_dir().join(format!("designcraft-font-open-{}.designcraft", std::process::id()));
+        let path = std::env::temp_dir().join(format!("designcraft-font-open-{}.trteeb", std::process::id()));
         app.run("file.save", json!({"path":path})).unwrap();
         app.run("file.open", json!({"path":path})).unwrap();
         let dialog = app.ui.dialog.as_mut().unwrap();
@@ -2712,7 +2712,7 @@ mod import_warning_tests {
         let story = d.story_mut(sid).unwrap();
         story.format_chars(0..6, |f| f.over.font_family = Some("Unavailable Test Family".into()));
         story.paras[0].para.grep_styles = Some(vec![designcraft_doc::GrepStyle { style: "Keep".into(), pattern: "[a-".into() }]);
-        let path = std::env::temp_dir().join(format!("designcraft-font-warning-{}.designcraft", std::process::id()));
+        let path = std::env::temp_dir().join(format!("designcraft-font-warning-{}.trteeb", std::process::id()));
         app.run("file.save", json!({"path": path})).unwrap();
         let result = app.open_file("file.open", json!({"path": path}));
         std::fs::remove_file(&path).unwrap();

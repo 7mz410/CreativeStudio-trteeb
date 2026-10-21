@@ -23,12 +23,16 @@ const PNG: &[u8] = &[
     0x1f, 0x00, 0x05, 0x00, 0x01, 0xff, 0x89, 0x99, 0x3d, 0x1d, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
 ];
 
-/// A `.designcraft` file of `pages` pages with `text` in a frame on the first, made outside any roots.
+/// A legacy `.designcraft` file of `pages` pages with `text` in a frame on the first, made outside any
+/// roots. The app saves `.trteeb` (the same bytes), so it is saved under that name and renamed: the
+/// legacy name is what the open tests read.
 fn designcraft_file(path: &Path, pages: u32, text: &str) {
     let mut s = Session::new();
     s.execute("file.new", &json!({"pages": pages})).unwrap();
     s.execute("frame.create", &json!({"rect": [36, 36, 300, 100], "content": "text", "text": text})).unwrap();
-    s.execute("file.save", &json!({"path": path.to_str().unwrap()})).unwrap();
+    let saved = path.with_extension("trteeb");
+    s.execute("file.save", &json!({"path": saved.to_str().unwrap()})).unwrap();
+    std::fs::rename(&saved, path).unwrap();
 }
 
 /// A fresh folder holding `in` (the read root), `out` (the write root), `outside` and `in2` (a
@@ -195,10 +199,10 @@ fn files_named_inside_a_document_are_read_through_the_roots_too() {
     std::fs::write(base.join("outside/linked.png"), PNG).unwrap();
     s.execute("file.place", &json!({"path": self::s(&base.join("outside/linked.png")), "x": 36, "y": 36, "width": 72})).unwrap();
     s.execute("data.source.select", &json!({"path": self::s(&base.join("outside/data.csv"))})).unwrap();
-    s.execute("file.save", &json!({"path": self::s(&base.join("in/linked.designcraft"))})).unwrap();
+    s.execute("file.save", &json!({"path": self::s(&base.join("in/linked.trteeb"))})).unwrap();
     assert_eq!(s.execute("links.list", &json!({})).unwrap()[0]["status"], "ok");
 
-    ok(&mut server, "open_document", json!({"path": self::s(&base.join("in/linked.designcraft"))}));
+    ok(&mut server, "open_document", json!({"path": self::s(&base.join("in/linked.trteeb"))}));
     let links = run_ok(&mut server, "links.list", json!({}));
     assert_eq!(links[0]["status"], "missing", "a link outside the read root reads as a file that isn't there: {links}");
     refused(&mut server, "data.source.update", json!({}), "outside the read root");
@@ -278,7 +282,7 @@ fn every_writing_command_is_refused_outside_the_write_root() {
         assert!(base.join("out").join(format!("{tool}.png")).exists(), "{tool}");
     }
     for file in
-        ["out-file.save.designcraft", "out-file.exportPdf", "out-file.exportIdml", "out-book.exportPdf", "out-swatch.save", "out-snippet.export"]
+        ["out-file.save.trteeb", "out-file.exportPdf", "out-file.exportIdml", "out-book.exportPdf", "out-swatch.save", "out-snippet.export"]
     {
         assert!(base.join("out").join(file).exists(), "{file}");
     }
@@ -312,8 +316,8 @@ fn one_root_grants_only_its_own_access() {
     }
     let (error, text) = call(&mut write_only, "place_image", json!({"path": s(&base.join("in/pic.png"))}));
     assert!(error && text.contains("read authority is absent"), "{text}");
-    ok(&mut write_only, "save_document", json!({"path": s(&base.join("out/x.designcraft"))}));
-    assert!(base.join("out/x.designcraft").exists());
+    ok(&mut write_only, "save_document", json!({"path": s(&base.join("out/x.trteeb"))}));
+    assert!(base.join("out/x.trteeb").exists());
     let _ = std::fs::remove_dir_all(base);
 }
 
@@ -324,12 +328,12 @@ fn links_out_of_a_root_are_refused() {
     std::os::unix::fs::symlink(base.join("outside/doc.designcraft"), base.join("in/leak.designcraft")).unwrap();
     std::os::unix::fs::symlink(base.join("outside/data.csv"), base.join("in/leak.csv")).unwrap();
     std::os::unix::fs::symlink(base.join("outside"), base.join("out/away")).unwrap();
-    std::os::unix::fs::symlink(base.join("outside/gone.designcraft"), base.join("out/dangling.designcraft")).unwrap();
+    std::os::unix::fs::symlink(base.join("outside/gone.designcraft"), base.join("out/dangling.trteeb")).unwrap();
     refused(&mut server, "file.open", json!({"path": s(&base.join("in/leak.designcraft"))}), "outside the read root");
     refused(&mut server, "data.source.select", json!({"path": s(&base.join("in/leak.csv"))}), "outside the read root");
     refused(&mut server, "file.saveAs", json!({"path": s(&base.join("out/away/x.designcraft"))}), "outside the write root");
     refused(&mut server, "file.exportPdf", json!({"path": s(&base.join("out/away/x.pdf"))}), "outside the write root");
-    refused(&mut server, "file.saveAs", json!({"path": s(&base.join("out/dangling.designcraft"))}), "a link that leads nowhere");
+    refused(&mut server, "file.saveAs", json!({"path": s(&base.join("out/dangling.trteeb"))}), "a link that leads nowhere");
     assert!(!base.join("outside/x.designcraft").exists() && !base.join("outside/x.pdf").exists() && !base.join("outside/gone.designcraft").exists());
     assert_eq!(pages(&mut server), 1, "nothing from the file the link led to reached the session");
     let _ = std::fs::remove_dir_all(base);
@@ -344,8 +348,8 @@ fn without_roots_nothing_is_confined() {
     let mut server = Server::new(Box::new(Headless::with_document().with_automation_roots(AutomationRoots::new(None, None).unwrap())));
     ok(&mut server, "open_document", json!({"path": s(&base.join("a.designcraft"))}));
     assert_eq!(pages(&mut server), 3);
-    ok(&mut server, "save_document", json!({"path": s(&base.join("b.designcraft"))}));
+    ok(&mut server, "save_document", json!({"path": s(&base.join("b.trteeb"))}));
     ok(&mut server, "export_png", json!({"path": s(&base.join("b.png"))}));
-    assert!(base.join("b.designcraft").exists() && base.join("b.png").exists());
+    assert!(base.join("b.trteeb").exists() && base.join("b.png").exists());
     let _ = std::fs::remove_dir_all(base);
 }
