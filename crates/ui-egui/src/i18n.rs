@@ -1520,9 +1520,18 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ),
     (
         "Creative Studio App Page…",
-        ["Creative Studio App Page…", "Page de l'application Creative Studio…", "Creative Studio App Page…", "Creative Studio App Page…", "Creative Studio 应用页面…"],
+        [
+            "Creative Studio App Page…",
+            "Page de l'application Creative Studio…",
+            "Creative Studio App Page…",
+            "Creative Studio App Page…",
+            "Creative Studio 应用页面…",
+        ],
     ),
-    ("Creative Studio Website…", ["Creative Studio Website…", "Site web d'Creative Studio…", "Creative Studio Website…", "Creative Studio Website…", "Creative Studio 网站…"]),
+    (
+        "Creative Studio Website…",
+        ["Creative Studio Website…", "Site web d'Creative Studio…", "Creative Studio Website…", "Creative Studio Website…", "Creative Studio 网站…"],
+    ),
     ("Attributes", ["Attributes", "Attributs", "Attributes", "Attributes", "属性"]),
     ("Bevel and Emboss", ["Bevel and Emboss", "Biseautage et estampage", "Bevel and Emboss", "Bevel and Emboss", "斜面和浮雕"]),
     ("Buttons", ["Buttons", "Boutons", "Buttons", "Buttons", "按钮"]),
@@ -1669,14 +1678,8 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ["Delete Text Variable", "Supprimer la variable de texte", "Delete Text Variable", "Delete Text Variable", "删除文本变量"],
     ),
     ("Delete Workspace…", ["Delete Workspace…", "Supprimer l'espace de travail…", "Delete Workspace…", "Delete Workspace…", "删除工作区…"]),
-    (
-        "trteeb Website…",
-        ["trteeb Website…", "Site web de trteeb…", "trteeb Website…", "trteeb Website…", "trteeb 网站…"],
-    ),
-    (
-        "trteeb on GitHub…",
-        ["trteeb on GitHub…", "trteeb sur GitHub…", "trteeb on GitHub…", "trteeb on GitHub…", "trteeb 在 GitHub 上…"],
-    ),
+    ("trteeb Website…", ["trteeb Website…", "Site web de trteeb…", "trteeb Website…", "trteeb Website…", "trteeb 网站…"]),
+    ("trteeb on GitHub…", ["trteeb on GitHub…", "trteeb sur GitHub…", "trteeb on GitHub…", "trteeb on GitHub…", "trteeb 在 GitHub 上…"]),
     (
         "Detach All Objects from Parent",
         [
@@ -2530,7 +2533,16 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Keyboard Increments", ["Keyboard Increments", "Incréments au clavier", "Keyboard Increments", "Keyboard Increments", "键盘增量"]),
     ("Liquid guides", ["Liquid guides", "Repères liquides", "Liquid guides", "Liquid guides", "自适应参考线"]),
     ("Markers", ["Markers", "Marqueurs", "Markers", "Markers", "标记"]),
-    ("More Creative Studio apps", ["More Creative Studio apps", "Autres applications Creative Studio", "More Creative Studio apps", "More Creative Studio apps", "更多 Creative Studio 应用"]),
+    (
+        "More Creative Studio apps",
+        [
+            "More Creative Studio apps",
+            "Autres applications Creative Studio",
+            "More Creative Studio apps",
+            "More Creative Studio apps",
+            "更多 Creative Studio 应用",
+        ],
+    ),
     ("Nested Line Styles", ["Nested Line Styles", "Styles de ligne imbriqués", "Nested Line Styles", "Nested Line Styles", "嵌套行样式"]),
     ("Nested Styles", ["Nested Styles", "Styles imbriqués", "Nested Styles", "Nested Styles", "嵌套样式"]),
     (
@@ -2827,10 +2839,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ),
     ("Utilities", ["Utilities", "Utilitaires", "Utilities", "Utilities", "实用程序"]),
     ("Variable Font", ["Variable Font", "Police variable", "Variable Font", "Variable Font", "可变字体"]),
-    (
-        "Welcome to trteeb",
-        ["Welcome to trteeb", "Bienvenue dans trteeb", "Welcome to trteeb", "Welcome to trteeb", "欢迎使用 trteeb"],
-    ),
+    ("Welcome to trteeb", ["Welcome to trteeb", "Bienvenue dans trteeb", "Welcome to trteeb", "Welcome to trteeb", "欢迎使用 trteeb"]),
     ("When Scaling", ["When Scaling", "Lors du redimensionnement", "When Scaling", "When Scaling", "缩放时"]),
     ("[Basic] (working) ▾", ["[Basic] (working) ▾", "[De base] (de travail) ▾", "[Basic] (working) ▾", "[Basic] (working) ▾", "[基本] (工作区) ▾"]),
     ("[Black] Overprint", ["[Black] Overprint", "Surimpression de [Noir]", "[Black] Overprint", "[Black] Overprint", "[黑] 叠印"]),
