@@ -1261,7 +1261,7 @@ fn a_document_dropped_on_a_floating_panel_window_opens() {
         }
     }
     let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("dropped.designcraft");
+    let path = dir.path().join("dropped.trteeb");
     let mut saved = app();
     saved.run("file.new", json!({})).unwrap();
     saved.run("file.save", json!({"path": path})).unwrap();

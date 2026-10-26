@@ -340,7 +340,7 @@ fn text(reply: &serde_json::Value) -> &str {
     reply["result"]["content"][0]["text"].as_str().unwrap()
 }
 
-/// A `.designcraft` file with one page, made with the CLI itself.
+/// A `.trteeb` file with one page, made with the CLI itself.
 fn make_document(path: &std::path::Path) {
     let out = cli().args(["run", "--cmd", "file.new={}", "--cmd"]).arg(format!("file.save={}", serde_json::json!({"path": path}))).output().unwrap();
     assert!(out.status.success(), "{}", String::from_utf8_lossy(&out.stderr));
@@ -438,7 +438,7 @@ fn mcp_automation_roots_take_several_folders() {
     // `\\?\` prefix that `canonicalize` adds on Windows: the server shows the roots without it, and
     // Windows does not resolve `..` in a path that has it.
     let base = without_verbatim_prefix(std::fs::canonicalize(base).unwrap());
-    for f in ["in/a.designcraft", "shared/b.designcraft", "outside/secret.designcraft", "parent.designcraft", "in2/c.designcraft"] {
+    for f in ["in/a.trteeb", "shared/b.trteeb", "outside/secret.trteeb", "parent.trteeb", "in2/c.trteeb"] {
         make_document(&base.join(f));
     }
     // Windows' canonical `\\?\` form is not a prefix under which `..` is a path component:
@@ -460,22 +460,22 @@ fn mcp_automation_roots_take_several_folders() {
     let sep = std::path::MAIN_SEPARATOR;
     let up = |root: &str, rest: &str| format!("{}{sep}..{sep}{rest}", plain(&base.join(root)));
     let calls = [
-        ("open_document", serde_json::json!({"path": p("in/a.designcraft")})),
-        ("open_document", serde_json::json!({"path": p("shared/b.designcraft")})),
+        ("open_document", serde_json::json!({"path": p("in/a.trteeb")})),
+        ("open_document", serde_json::json!({"path": p("shared/b.trteeb")})),
         // The roots' common parent is not a root.
-        ("open_document", serde_json::json!({"path": p("parent.designcraft")})),
-        ("open_document", serde_json::json!({"path": up("shared", &format!("outside{sep}secret.designcraft"))})),
+        ("open_document", serde_json::json!({"path": p("parent.trteeb")})),
+        ("open_document", serde_json::json!({"path": up("shared", &format!("outside{sep}secret.trteeb"))})),
         // `in2` only starts like `in`.
-        ("open_document", serde_json::json!({"path": p("in2/c.designcraft")})),
+        ("open_document", serde_json::json!({"path": p("in2/c.trteeb")})),
         // `..` from one read root into another stays inside.
-        ("open_document", serde_json::json!({"path": up("shared", &format!("in{sep}a.designcraft"))})),
-        ("save_document", serde_json::json!({"path": p("out/x.designcraft")})),
-        ("save_document", serde_json::json!({"path": p("scratch/y.designcraft")})),
-        ("save_document", serde_json::json!({"path": p("z.designcraft")})),
-        ("save_document", serde_json::json!({"path": p("scratch2/z.designcraft")})),
+        ("open_document", serde_json::json!({"path": up("shared", &format!("in{sep}a.trteeb"))})),
+        ("save_document", serde_json::json!({"path": p("out/x.trteeb")})),
+        ("save_document", serde_json::json!({"path": p("scratch/y.trteeb")})),
+        ("save_document", serde_json::json!({"path": p("z.trteeb")})),
+        ("save_document", serde_json::json!({"path": p("scratch2/z.trteeb")})),
         // Read and write stay separate: a read root is not a write root, nor the other way round.
-        ("save_document", serde_json::json!({"path": p("shared/w.designcraft")})),
-        ("open_document", serde_json::json!({"path": p("out/x.designcraft")})),
+        ("save_document", serde_json::json!({"path": p("shared/w.trteeb")})),
+        ("open_document", serde_json::json!({"path": p("out/x.trteeb")})),
         ("export_png", serde_json::json!({"path": up("scratch", &format!("outside{sep}p.png"))})),
     ];
     let read2 = format!("--automation-read-root={}", p("shared"));
@@ -495,24 +495,24 @@ fn mcp_automation_roots_take_several_folders() {
     for (i, kind) in [(2, "read"), (3, "read"), (4, "read"), (8, "write"), (9, "write"), (10, "write"), (11, "read"), (12, "write")] {
         assert!(text(&replies[i]).contains(&format!("outside the {kind} roots ")), "{i}: {}", text(&replies[i]));
     }
-    assert!(base.join("out/x.designcraft").is_file() && base.join("scratch/y.designcraft").is_file());
-    for f in ["z.designcraft", "scratch2/z.designcraft", "shared/w.designcraft", "outside/p.png"] {
+    assert!(base.join("out/x.trteeb").is_file() && base.join("scratch/y.trteeb").is_file());
+    for f in ["z.trteeb", "scratch2/z.trteeb", "shared/w.trteeb", "outside/p.png"] {
         assert!(!base.join(f).exists(), "{f} was written outside the write roots");
     }
 
     // A link in one root that leads out of all of them is outside, for reading and for writing.
     #[cfg(unix)]
     {
-        std::os::unix::fs::symlink(base.join("outside/secret.designcraft"), base.join("shared/leak.designcraft")).unwrap();
+        std::os::unix::fs::symlink(base.join("outside/secret.trteeb"), base.join("shared/leak.trteeb")).unwrap();
         std::os::unix::fs::symlink(base.join("outside"), base.join("scratch/away")).unwrap();
         let calls = [
-            ("open_document", serde_json::json!({"path": p("shared/leak.designcraft")})),
-            ("save_document", serde_json::json!({"path": p("scratch/away/x.designcraft")})),
+            ("open_document", serde_json::json!({"path": p("shared/leak.trteeb")})),
+            ("save_document", serde_json::json!({"path": p("scratch/away/x.trteeb")})),
         ];
         let (_, _, replies) = mcp_session(&args, &calls);
         assert!(text(&replies[0]).contains("outside the read roots"), "{}", text(&replies[0]));
         assert!(text(&replies[1]).contains("outside the write roots"), "{}", text(&replies[1]));
-        assert!(!base.join("outside/x.designcraft").exists());
+        assert!(!base.join("outside/x.trteeb").exists());
     }
     let _ = std::fs::remove_dir_all(base);
 }
