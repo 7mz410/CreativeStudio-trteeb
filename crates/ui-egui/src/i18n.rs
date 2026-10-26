@@ -46,6 +46,71 @@ pub fn picker_languages() -> Vec<(&'static str, &'static str)> {
 
 /// English → [German, French, Spanish, Japanese, Simplified Chinese].
 const TABLE: &[(&str, [&str; 5])] = &[
+    (
+        "Character Formatting Controls",
+        [
+            "Steuerelemente für Zeichenformatierung",
+            "Commandes de mise en forme des caractères",
+            "Controles de formato de carácter",
+            "文字形式コントロール",
+            "字符格式控制",
+        ],
+    ),
+    (
+        "Paragraph Formatting Controls",
+        [
+            "Steuerelemente für Absatzformatierung",
+            "Commandes de mise en forme des paragraphes",
+            "Controles de formato de párrafo",
+            "段落形式コントロール",
+            "段落格式控制",
+        ],
+    ),
+    ("Font Size", ["Schriftgrad", "Corps", "Tamaño de fuente", "フォントサイズ", "字体大小"]),
+    ("Vertical Scale", ["Vertikal skalieren", "Échelle verticale", "Escala vertical", "垂直比率", "垂直缩放"]),
+    ("Horizontal Scale", ["Horizontal skalieren", "Échelle horizontale", "Escala horizontal", "水平比率", "水平缩放"]),
+    ("Baseline Shift", ["Grundlinienversatz", "Décalage vertical", "Desplazamiento vertical", "ベースラインシフト", "基线偏移"]),
+    (
+        "Skew (False Italic)",
+        ["Verzerren (falscher Kursivstil)", "Inclinaison (faux italique)", "Sesgar (cursiva falsa)", "歪み（斜体）", "倾斜（伪斜体）"],
+    ),
+    ("Left Indent", ["Einzug links", "Retrait gauche", "Sangría izquierda", "左インデント", "左缩进"]),
+    ("Right Indent", ["Einzug rechts", "Retrait droit", "Sangría derecha", "右インデント", "右缩进"]),
+    (
+        "First Line Left Indent",
+        ["Einzug links in erster Zeile", "Retrait gauche de première ligne", "Sangría izquierda en primera línea", "1行目左インデント", "首行左缩进"],
+    ),
+    (
+        "Last Line Right Indent",
+        ["Einzug rechts in letzter Zeile", "Retrait droit de dernière ligne", "Sangría derecha en última línea", "最終行右インデント", "末行右缩进"],
+    ),
+    (
+        "Drop Cap Number of Lines",
+        ["Initiale: Anzahl der Zeilen", "Lettrine (nombre de lignes)", "Capitular: número de líneas", "ドロップキャップの行数", "首字下沉行数"],
+    ),
+    (
+        "Drop Cap One or More Characters",
+        [
+            "Initiale: ein oder mehrere Zeichen",
+            "Lettrine (un ou plusieurs caractères)",
+            "Capitular: uno o más caracteres",
+            "ドロップキャップの文字数",
+            "首字下沉一个或多个字符",
+        ],
+    ),
+    (
+        "Align to Baseline Grid",
+        [
+            "An Grundlinienraster ausrichten",
+            "Aligner sur la grille de ligne de base",
+            "Alinear con cuadrícula base",
+            "ベースライングリッドに揃える",
+            "对齐基线网格",
+        ],
+    ),
+    // Properties › Paragraph (•••).
+    ("Space Before", ["Abstand davor", "Espace avant", "Espacio anterior", "段落前の間隔", "段前间距"]),
+    ("Space After", ["Abstand danach", "Espace après", "Espacio posterior", "段落後の間隔", "段后间距"]),
     // Menus.
     ("File", ["Datei", "Fichier", "Archivo", "ファイル", "文件"]),
     ("Edit", ["Bearbeiten", "Édition", "Edición", "編集", "编辑"]),
@@ -84,6 +149,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ],
     ),
     ("Close", ["Schließen", "Fermer", "Cerrar", "閉じる", "关闭"]),
+    ("Dismiss", ["Ausblenden", "Ignorer", "Descartar", "閉じる", "关闭"]),
     ("Save", ["Speichern", "Enregistrer", "Guardar", "保存", "保存"]),
     ("Save As…", ["Speichern unter …", "Enregistrer sous…", "Guardar como…", "別名で保存…", "另存为…"]),
     ("Save a Copy…", ["Kopie speichern …", "Enregistrer une copie…", "Guardar una copia…", "コピーを保存…", "保存副本…"]),
@@ -92,6 +158,8 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Export PDF…", ["PDF exportieren …", "Exporter en PDF…", "Exportar PDF…", "PDF を書き出し…", "导出PDF…"]),
     ("Print…", ["Drucken …", "Imprimer…", "Imprimir…", "プリント…", "打印…"]),
     ("Document Setup…", ["Dokument einrichten …", "Format de document…", "Ajustar documento…", "ドキュメント設定…", "文档设置…"]),
+    ("File Info…", ["Dateiinformationen …", "Informations sur le fichier…", "Información de archivo…", "ファイル情報…", "文件信息…"]),
+    ("File Info", ["Dateiinformationen", "Informations sur le fichier", "Información de archivo", "ファイル情報", "文件信息"]),
     ("Package…", ["Verpacken …", "Assemblage…", "Empaquetar…", "パッケージ…", "打包…"]),
     // Edit.
     ("Undo", ["Rückgängig", "Annuler", "Deshacer", "取り消し", "还原"]),
@@ -135,12 +203,104 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Previous Page", ["Vorherige Seite", "Page précédente", "Página anterior", "前のページ", "上一页"]),
     ("Next Page", ["Nächste Seite", "Page suivante", "Página siguiente", "次のページ", "下一页"]),
     ("Last Page", ["Letzte Seite", "Dernière page", "Última página", "最後のページ", "最后一页"]),
+    ("Go Back", ["Zurück gehen", "Revenir", "Retroceder", "前に戻る", "后退"]),
+    ("Go Forward", ["Vorwärts gehen", "Avancer", "Avanzar", "次に進む", "前进"]),
     (
         "Close Tab Group",
         ["Registerkartengruppe schließen", "Fermer le groupe d'onglets", "Cerrar grupo de fichas", "タブグループを閉じる", "关闭选项卡组"],
     ),
     ("Minimize", ["Minimieren", "Réduire", "Minimizar", "最小化", "最小化"]),
     ("Collapse to Icons", ["Auf Symbole minimieren", "Réduire en icônes", "Contraer a iconos", "アイコンパネルに折りたたむ", "折叠为图标"]),
+    // Docking chrome (craft-ui labels in DesignCraft's wording, `panel_docking::DOCK_LABELS`).
+    ("Group with", ["Gruppieren mit", "Grouper avec", "Agrupar con", "次とグループ化", "编组到"]),
+    ("Panels", ["Bedienfelder", "Panneaux", "Paneles", "パネル", "面板"]),
+    (
+        "Resize panels",
+        ["Größe der Bedienfelder ändern", "Redimensionner les panneaux", "Cambiar tamaño de los paneles", "パネルのサイズを変更", "调整面板大小"],
+    ),
+    (
+        "Resize panel window",
+        [
+            "Größe des Bedienfeldfensters ändern",
+            "Redimensionner la fenêtre de panneau",
+            "Cambiar tamaño de la ventana de panel",
+            "パネルウィンドウのサイズを変更",
+            "调整面板窗口大小",
+        ],
+    ),
+    (
+        "Move tab group",
+        ["Registerkartengruppe verschieben", "Déplacer le groupe d'onglets", "Mover grupo de fichas", "タブグループを移動", "移动选项卡组"],
+    ),
+    ("Expand", ["Erweitern", "Développer", "Expandir", "展開", "展开"]),
+    (
+        "Float Tab Group",
+        [
+            "Registerkartengruppe lösen",
+            "Détacher le groupe d'onglets",
+            "Hacer flotante el grupo de fichas",
+            "タブグループをフローティング表示",
+            "浮动选项卡组",
+        ],
+    ),
+    (
+        "Group Tab Group with",
+        [
+            "Registerkartengruppe gruppieren mit",
+            "Grouper le groupe d'onglets avec",
+            "Agrupar grupo de fichas con",
+            "タブグループを次とグループ化",
+            "将选项卡组编组到",
+        ],
+    ),
+    (
+        "Move panel column",
+        ["Bedienfeldspalte verschieben", "Déplacer la colonne de panneaux", "Mover columna de paneles", "パネル列を移動", "移动面板列"],
+    ),
+    ("Expand Panels", ["Bedienfelder erweitern", "Développer les panneaux", "Expandir paneles", "パネルを展開", "展开面板"]),
+    (
+        "Move panel window",
+        ["Bedienfeldfenster verschieben", "Déplacer la fenêtre de panneau", "Mover ventana de panel", "パネルウィンドウを移動", "移动面板窗口"],
+    ),
+    (
+        "Close panel window",
+        ["Bedienfeldfenster schließen", "Fermer la fenêtre de panneau", "Cerrar ventana de panel", "パネルウィンドウを閉じる", "关闭面板窗口"],
+    ),
+    (
+        "Close Other Panels in Group",
+        [
+            "Andere Bedienfelder der Gruppe schließen",
+            "Fermer les autres panneaux du groupe",
+            "Cerrar los demás paneles del grupo",
+            "グループ内の他のパネルを閉じる",
+            "关闭组中的其他面板",
+        ],
+    ),
+    ("Maximize Frame", ["Bereich maximieren", "Agrandir la zone", "Maximizar área", "領域を最大化", "最大化区域"]),
+    (
+        "Restore Frame Size",
+        ["Bereichsgröße wiederherstellen", "Restaurer la taille de la zone", "Restaurar tamaño del área", "領域のサイズを元に戻す", "恢复区域大小"],
+    ),
+    (
+        "Move Panel to New Window",
+        [
+            "Bedienfeld in neues Fenster verschieben",
+            "Déplacer le panneau dans une nouvelle fenêtre",
+            "Mover panel a una ventana nueva",
+            "パネルを新規ウィンドウに移動",
+            "将面板移到新窗口",
+        ],
+    ),
+    (
+        "Auto-Collapse Iconic Panels",
+        [
+            "Symbolbedienfelder automatisch minimieren",
+            "Réduire automatiquement les panneaux d’icônes",
+            "Contraer automáticamente los paneles de iconos",
+            "アイコンパネルを自動的に折りたたむ",
+            "自动折叠图标面板",
+        ],
+    ),
     ("Panel Options", ["Bedienfeldoptionen", "Options du panneau", "Opciones de panel", "パネルオプション", "面板选项"]),
     ("Panel Options…", ["Bedienfeldoptionen…", "Options du panneau…", "Opciones de panel…", "パネルオプション…", "面板选项…"]),
     ("Show Thumbnails", ["Miniaturen anzeigen", "Afficher les vignettes", "Mostrar miniaturas", "サムネールを表示", "显示缩览图"]),
@@ -294,6 +454,10 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Settings for:", ["Einstellungen für:", "Paramètres pour :", "Ajustes para:", "設定対象：", "设置："]),
     ("Transparency", ["Transparenz", "Transparence", "Transparencia", "透明", "透明度"]),
     ("Transparency…", ["Transparenz…", "Transparence…", "Transparencia…", "透明…", "透明度…"]),
+    (
+        "Transparency Flattener",
+        ["Transparenzreduzierung", "Aplatissement de la transparence", "Acoplador de transparencia", "透明の分割・統合", "透明度拼合"],
+    ),
     ("Basic Blending", ["Grundlegendes Füllen", "Fusion de base", "Fusión básica", "基本的な描画モード", "基本混合"]),
     ("Opacity:", ["Deckkraft:", "Opacité :", "Opacidad:", "不透明度：", "不透明度："]),
     ("Blending", ["Füllmethode", "Fusion", "Fusión", "描画モード", "混合"]),
@@ -1010,6 +1174,102 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ],
     ),
     ("Load Styles", ["Formate laden", "Charger les styles", "Cargar estilos", "スタイルを読み込み", "加载样式"]),
+    ("Restart Numbering", ["Nummerierung neu beginnen", "Recommencer la numérotation", "Reiniciar numeración", "番号の振り直し", "重新开始编号"]),
+    ("Continue Numbering", ["Nummerierung fortführen", "Poursuivre la numérotation", "Continuar numeración", "番号の継続", "继续编号"]),
+    ("Keep Options…", ["Umbruchoptionen …", "Options d'enchaînement…", "Opciones de separación…", "段落分離禁止オプション…", "保持选项…"]),
+    (
+        "Space Between Paragraphs Using Same Style",
+        [
+            "Abstand zwischen Absätzen mit gleichem Format",
+            "Espace entre les paragraphes de même style",
+            "Espacio entre párrafos con el mismo estilo",
+            "同じスタイルの段落間のスペース",
+            "使用相同样式的段落间距",
+        ],
+    ),
+    ("Ignore", ["Ignorieren", "Ignorer", "Ignorar", "無視", "忽略"]),
+    (
+        "Do Not Align to Baseline Grid",
+        [
+            "Nicht am Grundlinienraster ausrichten",
+            "Ne pas aligner sur la grille de ligne de base",
+            "No alinear con cuadrícula base",
+            "ベースライングリッドに揃えない",
+            "不对齐基线网格",
+        ],
+    ),
+    (
+        "Only Align First Line to Grid",
+        [
+            "Nur erste Zeile am Raster ausrichten",
+            "Aligner uniquement la première ligne sur la grille",
+            "Alinear solo primera línea con cuadrícula",
+            "最初の行のみグリッドに揃える",
+            "仅首行对齐网格",
+        ],
+    ),
+    (
+        "Balance Ragged Lines",
+        ["Unausgeglichene Zeilen ausgleichen", "Équilibrer les lignes irrégulières", "Equilibrar líneas desiguales", "行末を調整", "平衡未对齐的行"],
+    ),
+    (
+        "Drop Caps and Nested Styles…",
+        [
+            "Initialen und verschachtelte Formate …",
+            "Lettrines et styles imbriqués…",
+            "Capitulares y estilos anidados…",
+            "ドロップキャップと先頭文字スタイル…",
+            "首字下沉和嵌套样式…",
+        ],
+    ),
+    ("GREP Styles…", ["GREP-Stile …", "Styles GREP…", "Estilos GREP…", "正規表現スタイル…", "GREP 样式…"]),
+    (
+        "Restart/Continue Numbering",
+        [
+            "Nummerierung neu beginnen/fortführen",
+            "Recommencer/Poursuivre la numérotation",
+            "Reiniciar/Continuar numeración",
+            "番号の振り直し/継続",
+            "重新开始/继续编号",
+        ],
+    ),
+    (
+        "Convert Bullets and Numbering to Text",
+        [
+            "Aufzählungszeichen und Nummerierung in Text konvertieren",
+            "Convertir les puces et la numérotation en texte",
+            "Convertir viñetas y numeración en texto",
+            "箇条書きと段落番号をテキストに変換",
+            "将项目符号和编号转换为文本",
+        ],
+    ),
+    ("Hyphenation…", ["Silbentrennung …", "Césure…", "Separación por sílabas…", "ハイフネーション…", "连字…"]),
+    (
+        "Hyphenation Settings",
+        ["Silbentrennungseinstellungen", "Paramètres de césure", "Configuración de separación por sílabas", "ハイフネーション設定", "连字设置"],
+    ),
+    ("hyphens", ["Trennstriche", "tirets", "guiones", "ハイフン", "连字符"]),
+    ("Hyphenation Zone:", ["Silbentrennungsbereich:", "Zone de césure :", "Zona de separación:", "ハイフネーション領域 :", "连字区："]),
+    ("Better Spacing", ["Bessere Abstände", "Meilleur espacement", "Mejor espaciado", "スペースを優先", "更好的间距"]),
+    ("Fewer Hyphens", ["Weniger Trennstriche", "Moins de tirets", "Menos guiones", "ハイフンを減らす", "更少的连字符"]),
+    (
+        "Hyphenate Capitalized Words",
+        [
+            "Großgeschriebene Wörter trennen",
+            "Césure des mots en capitales",
+            "Separar palabras en mayúscula",
+            "大文字で始まる単語をハイフネーション",
+            "连字大写的单词",
+        ],
+    ),
+    (
+        "Hyphenate Last Word",
+        ["Letztes Wort trennen", "Césure du dernier mot", "Separar última palabra", "最後の単語をハイフネーション", "连字最后一个单词"],
+    ),
+    (
+        "Hyphenate Across Column",
+        ["Über Spalten trennen", "Césure entre colonnes", "Separar entre columnas", "段をまたいでハイフネーション", "跨栏连字"],
+    ),
     (
         "Differs from this document",
         ["Weicht von diesem Dokument ab", "Diffère de ce document", "Difiere de este documento", "このドキュメントと異なります", "与此文档不同"],
@@ -1139,6 +1399,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ),
     ("Paragraph Style:", ["Paragraph Style:", "Style de paragraphe :", "Paragraph Style:", "Paragraph Style:", "段落样式："]),
     ("PDF/A-2b", ["PDF/A-2b", "PDF/A-2b", "PDF/A-2b", "PDF/A-2b", "PDF/A-2b"]),
+    ("PDF/X-1a:2003", ["PDF/X-1a:2003", "PDF/X-1a:2003", "PDF/X-1a:2003", "PDF/X-1a:2003", "PDF/X-1a:2003"]),
     ("PDF/X-4", ["PDF/X-4", "PDF/X-4", "PDF/X-4", "PDF/X-4", "PDF/X-4"]),
     ("Place PDF", ["Place PDF", "Importer un PDF", "Place PDF", "Place PDF", "置入PDF"]),
     ("Plain Text", ["Plain Text", "Texte brut", "Plain Text", "Plain Text", "纯文本"]),
@@ -1622,6 +1883,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         "Convert to Form Field",
         ["Convert to Form Field", "Convertir en champ de formulaire", "Convert to Form Field", "Convert to Form Field", "转换为表单域"],
     ),
+    ("Convert to Note", ["Convert to Note", "Convertir en note", "Convert to Note", "Convert to Note", "转换为注释"]),
     ("Conveyor", ["Conveyor", "Convoyeur", "Conveyor", "Conveyor", "传送带"]),
     ("Copy Link(s) To…", ["Copy Link(s) To…", "Copier les liens vers…", "Copy Link(s) To…", "Copy Link(s) To…", "复制链接至…"]),
     ("Corner Options…", ["Corner Options…", "Options d'arrondi…", "Corner Options…", "Corner Options…", "角选项…"]),
@@ -1657,6 +1919,8 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ],
     ),
     ("Define Lists…", ["Define Lists…", "Définir des listes…", "Define Lists…", "Define Lists…", "定义列表…"]),
+    ("Apply Bullets", ["Aufzählungszeichen anwenden", "Appliquer des puces", "Aplicar viñetas", "箇条書きを適用", "应用项目符号"]),
+    ("Apply Numbers", ["Nummerierung anwenden", "Appliquer la numérotation", "Aplicar números", "段落番号を適用", "应用编号"]),
     (
         "Define Text Variable…",
         ["Define Text Variable…", "Définir une variable de texte…", "Define Text Variable…", "Define Text Variable…", "定义文本变量…"],
@@ -1797,7 +2061,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         ],
     ),
     ("Flattener Preview", ["Flattener Preview", "Aperçu de l'aplatissement", "Flattener Preview", "Flattener Preview", "拼合器预览"]),
-    ("Float Panel", ["Float Panel", "Détacher le panneau", "Float Panel", "Float Panel", "浮动面板"]),
+    ("Float Panel", ["Bedienfeld lösen", "Détacher le panneau", "Hacer flotante el panel", "パネルをフローティング表示", "浮动面板"]),
     ("Fonts in Document", ["Fonts in Document", "Polices du document", "Fonts in Document", "Fonts in Document", "文档中的字体"]),
     ("Footnotes", ["Footnotes", "Notes de bas de page", "Footnotes", "Footnotes", "脚注"]),
     ("Form Fields", ["Form Fields", "Champs de formulaire", "Form Fields", "Form Fields", "表单域"]),
@@ -1865,6 +2129,16 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ),
     ("Insert Pages…", ["Insert Pages…", "Insérer des pages…", "Insert Pages…", "Insert Pages…", "插入页面…"]),
     ("Insert Variable", ["Insert Variable", "Insérer une variable", "Insert Variable", "Insert Variable", "插入变量"]),
+    (
+        "Convert Variable to Text",
+        [
+            "Variable in Text konvertieren",
+            "Convertir la variable en texte",
+            "Convertir variable en texto",
+            "変数をテキストに変換",
+            "将变量转换为文本",
+        ],
+    ),
     ("Inspect Document", ["Inspect Document", "Inspecter le document", "Inspect Document", "Inspect Document", "检查文档"]),
     (
         "Interface Color Theme",
@@ -1924,6 +2198,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("New Table Style…", ["New Table Style…", "Nouveau style de tableau…", "New Table Style…", "New Table Style…", "新建表样式…"]),
     ("Next Cell", ["Next Cell", "Cellule suivante", "Next Cell", "Next Cell", "下一个单元格"]),
     ("Next Document", ["Next Document", "Document suivant", "Next Document", "Next Document", "下一个文档"]),
+    ("Next Note", ["Next Note", "Note suivante", "Next Note", "Next Note", "下一个注释"]),
     ("Next Object Above", ["Next Object Above", "Objet suivant au-dessus", "Next Object Above", "Next Object Above", "上方下一个对象"]),
     ("Next Object Below", ["Next Object Below", "Objet suivant en dessous", "Next Object Below", "Next Object Below", "下方下一个对象"]),
     (
@@ -2002,6 +2277,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Preflight Document", ["Preflight Document", "Contrôle en amont du document", "Preflight Document", "Preflight Document", "预检文档"]),
     ("Previous Cell", ["Previous Cell", "Cellule précédente", "Previous Cell", "Previous Cell", "上一个单元格"]),
     ("Previous Document", ["Previous Document", "Document précédent", "Previous Document", "Previous Document", "上一个文档"]),
+    ("Previous Note", ["Previous Note", "Note précédente", "Previous Note", "Previous Note", "上一个注释"]),
     (
         "Previous Object in Group",
         ["Previous Object in Group", "Objet précédent du groupe", "Previous Object in Group", "Previous Object in Group", "组中的上一个对象"],
@@ -2133,6 +2409,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
         "Split Cell Vertically",
         ["Split Cell Vertically", "Scinder la cellule verticalement", "Split Cell Vertically", "Split Cell Vertically", "垂直拆分单元格"],
     ),
+    ("Split Note", ["Split Note", "Scinder la note", "Split Note", "Split Note", "拆分注释"]),
     ("Split Path", ["Split Path", "Fractionner le tracé", "Split Path", "Split Path", "拆分路径"]),
     ("Step and Repeat…", ["Step and Repeat…", "Exécuter et répéter…", "Step and Repeat…", "Step and Repeat…", "步进和重复…"]),
     ("Stroke Styles", ["Stroke Styles", "Styles de contour", "Stroke Styles", "Stroke Styles", "描边样式"]),
@@ -3958,6 +4235,7 @@ const TABLE: &[(&str, [&str; 5])] = &[
     ("Records per page", ["Datensätze pro Seite", "Enregistrements par page", "Registros por página", "ページあたりのレコード", "每页记录数"]),
     ("Single record", ["Einzelner Datensatz", "Un seul enregistrement", "Un solo registro", "単一レコード", "单条记录"]),
     ("Multiple records", ["Mehrere Datensätze", "Plusieurs enregistrements", "Varios registros", "複数レコード", "多条记录"]),
+    ("Arrangement", ["Anordnung", "Disposition", "Disposición", "配置", "排列"]),
     ("Rows first", ["Zeilen zuerst", "Lignes d'abord", "Filas primero", "行を優先", "先行后列"]),
     ("Columns first", ["Spalten zuerst", "Colonnes d'abord", "Columnas primero", "列を優先", "先列后行"]),
     ("Column spacing", ["Spaltenabstand", "Espacement des colonnes", "Espacio entre columnas", "列の間隔", "列间距"]),
@@ -4689,6 +4967,22 @@ mod tests {
         }
     }
 
+    /// The Data Merge arrangement combo takes its accessible name from `tr(lang, "Arrangement")`.
+    /// A row in only the shared table leaves the languages whose lookup returns directly with the
+    /// English name.
+    #[test]
+    fn arrangement_accessible_name_is_localized_in_every_interface_language() {
+        for (code, name) in LANGUAGES {
+            let label = tr(code, "Arrangement");
+            if code.is_empty() {
+                assert_eq!(label, "Arrangement", "{name}");
+            } else {
+                assert_ne!(label, "Arrangement", "{name} still announces the English accessible name");
+                assert!(!label.trim().is_empty(), "{name}");
+            }
+        }
+    }
+
     #[test]
     fn context_captions_come_from_their_context_or_the_plain_translation() {
         for (lang, table) in CONTEXT_TABLES {
@@ -4871,6 +5165,8 @@ mod tests {
         keys.extend(crate::about::SIBLINGS.iter().map(|(_, _, what)| *what));
         keys.extend(crate::credits::NameMode::ALL.iter().map(|mode| mode.label()));
         keys.extend(crate::credits::SortKey::ALL.iter().flat_map(|key| [key.label().0, key.label().1]));
+        // Docking chrome labels reach `tr` through craft-ui's localizer.
+        keys.extend(crate::panel_docking::DOCK_LABELS.iter().map(|(_, english)| *english));
         // UI labels passed to `tr` that no other catalog has yet.
         keys.extend([
             "(any)",
@@ -4886,14 +5182,11 @@ mod tests {
             "Email Address:",
             "Email:",
             "Find fill:",
-            "Group with",
             "H:",
             "Message:",
             "Organization:",
             "Phone:",
             "W:",
-            "Resize panel window",
-            "Resize panels",
             "Subject:",
             "Text:",
             "Unsaved Changes",
@@ -4906,6 +5199,7 @@ mod tests {
             "{label}: {name} (double-click: Color Picker)",
             "All",
             "Align To",
+            "Arrangement",
             "Auto Rename",
             "Character Style",
             "Company",
@@ -4925,6 +5219,7 @@ mod tests {
             "No model credits were built into this copy.",
             "Object Style",
             "Paragraph Style",
+            "PDF/X-1a:2003",
             "Press keys…",
             "Range:",
             "Redefine Document Style",
@@ -4934,6 +5229,7 @@ mod tests {
             "Story {story} ← story {parent}",
             "Story Editor — {count} words",
             "Text Anchor",
+            "Transparency Flattener",
             "Use Document Style Definition",
             // Status-bar messages.
             "Alternate layout",
@@ -4949,6 +5245,8 @@ mod tests {
             "{name}: import cancelled while a dialog is open; choose the file again",
             "{name}: {count} step(s) done",
         ]);
+        // The Keyboard Shortcuts dialog's strings (craft-keymap) reach `tr` too.
+        keys.extend(crate::shortcuts_dialog::strings());
         keys
     }
 
