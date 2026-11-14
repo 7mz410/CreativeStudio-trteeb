@@ -1,0 +1,829 @@
+  Save  
+  Update  
+% of all commits
+(any)
+(cycles)
+(modified)
+(unchanged)
++Bin
++LOC
+1 Parent Character
+1 Ruby Character
+1 Ruby Character Aki
+1-2-1 (JIS) Rule
+1-2-1 Aki
+1/2 Parent Character
+1/2 Ruby Character
+180°
+A command can have at most {n} shortcuts
+A set with this name exists
+About
+About DesignCraft
+Above/Right
+Absorb Ideographic Space at Line End
+Across the Line:
+Action
+Activate Panel
+Add Anchor Point Tool
+Add Tab
+Add a shortcut to {label}
+Adjust Rotation
+Adjust Tsume
+Adjust layout
+Adjust page elements to document changes
+Adjustment When Ruby Is Longer Than Parent
+Advance seconds
+Affix in
+Agates
+Align Only First Line to Grid
+Align To
+All Classes
+All Commands
+All pages
+Allow
+Along the Line:
+Also used by {label}
+Alt
+Alternate layout
+Anchor
+Application
+Apply Numbering & Section Options
+Apply Text Attributes (Eyedropper)
+Apply To:
+Apply \
+Apply the changes; objects follow the new page size and margins
+Apply to:
+Approximated
+ArtCraft App Page
+ArtCraft App Page…
+ArtCraft Website
+ArtCraft Website…
+Artifact
+Asset
+Assets
+Assign
+Assign to Selected
+Assign {chord} to {label}
+At end
+Attrs
+Author
+Auto Align at Line Start/End
+Auto Rename
+Auto Tate-Chu-Yoko
+Auto Tate-chu-yoko Settings
+Auto fit
+Auto size
+Auto size reference
+Auto-Collapse Iconic Panels
+Auto-Size
+Auto-Sizing
+Automatic Chapter Numbering
+Automatic Page Numbering
+Axis
+Bands
+Based on:
+Below/Left
+Between Entry and Number:
+Binary assets added
+Binary assets removed
+Black Circle
+Black Triangle
+Blank Document Presets
+Book Name:
+Bookmarks panel
+Both Sides
+Both pages of the parent spread
+Both pages of the spread
+Bounding Box (All Layers)
+Bounding Box (Visible Layers Only)
+Break Thread
+Built-in sets cannot be changed
+Bullseye
+Bunri-Kinshi
+Cancel Import
+Cancel Preview
+Cancel the new shortcut
+Caps Lock
+Case
+Cell Number:
+Centered
+Centimeters
+Change Panel Layout
+Change Tab
+Change fill to:
+Changed
+Character Style
+Character:
+Characters After Break:
+Characters Before Break:
+Check for Updates…
+Chinese: Simplified
+Chinese: Traditional
+Choose a command…
+Ciceros
+Clear All Tabs
+Clear Object Style Overrides
+Click a key to see its shortcuts
+Clipping Path Options…
+Close Other Panels in Group
+Close Panel
+Close Window
+Close panel window
+Color Theme
+Color Theme Tool
+Color Theme…
+Color font
+Colors and Inks: {process} process, {spot} spot
+Column Gutter
+Column gutter
+Column width
+Columns kind
+Command
+Command for {item}
+Commands
+Commit Preview
+Commits
+Company
+Conflicts
+Content Collector Tool
+Content Placer Tool
+Context:
+Continue across stories
+Contributors
+Convert Direction Point Tool
+Convert Rows
+Copies
+Copy Report
+Corner Size
+Corners
+Couldn't write recovery data: {error}
+Cover image
+Create Links When Placing Text Files
+Ctrl
+Current shortcuts
+Current shortcuts:
+Currently Rendered With
+Currently assigned to:
+Data Fields
+Data Merge Options
+Decorative
+Default Rules
+Default: {chord}
+Definition
+Delete Anchor Point Tool
+Delete Character Style
+Delete Character Style…
+Delete Document Preset
+Delete Paragraph Style…
+Delete Points
+Delete Preset
+Delete Surrounding Text
+Delete the character style \
+Delete the paragraph style \
+Delete the set “{set}”?
+Deselect Guides
+DesignCraft
+DesignCraft Website
+DesignCraft Website…
+DesignCraft on GitHub
+DesignCraft on GitHub…
+DesignCraft page
+Detail pane size
+Differs from this document
+Digits:
+Dir
+Direct Selection Tool
+Display name
+Distance from Parent:
+Distribute Rows Evenly
+Document Chapter Numbering
+Document Name
+Don't Save
+Double Circle
+Drag Rows or Columns
+Dry run
+Duplicate Layer \
+EPUB Split Document
+Edit \
+Ellipse Frame Tool
+Ellipse Tool
+Em Box Bottom/Left
+Em Box Center
+Em Box Center (Down)
+Em Box Top/Right
+Email Address:
+Embed fonts
+Embedded images: {embedded}
+End
+Entry Style:
+Equal Aki
+Erase Tool
+Even Page Break
+Expand
+Expand Panels
+Export PowerPoint…
+Export…
+Extension
+Extract Color Theme
+Eyedropper Tool
+Facing pages
+Family
+File Info
+File Info…
+Filter:
+Filters:
+Find fill:
+First baseline
+First baseline min
+First commit
+Fisheye
+Fit to
+Fit to Width
+Fixed Keys
+Fixed layout
+Flatten
+Float Tab Group
+Font size
+Fonts: {used} in use, {missing} unavailable
+Force
+Format
+Formatting Affects Text
+Found
+Frame
+Free Transform Tool
+From
+Full screen
+Gap Tool
+Georgian
+Get Cell Stroke
+Get Tabs
+Go to Conflict
+Grab bag
+Gradient Feather Tool
+Gradient Swatch Tool
+Grep
+Grid Alignment:
+Grid Settings
+Group Ruby
+Group Tab Group with
+Group with
+Gyoudori:
+Hand Tool
+Hanging Type:
+Hard Kinsoku
+Heading
+Heading style
+Hidden
+Hide Styles
+Historical Forms
+Horizontal Kana
+ICF Bottom
+ICF Top
+IT
+Identifier
+Idml
+Ids
+Image import cancelled while a dialog is open
+Import
+Import InDesign Shortcut Set
+Import Warnings
+Import as New Set
+Import cancelled: the originating document has closed
+Import “{set}”
+Imported
+Imported as “{set}”
+Import…
+Inches
+Include Paragraph Styles:
+Include Prefix when Numbering Pages
+Include Roman Characters
+Include inside edges
+Include prefix
+Insert Field
+Instructions
+Intent
+Invalid panel layout; restored the default dock
+Japanese Composition Settings
+JetBrains Mono Regular
+Join the ArtCraft Discord
+Join the ArtCraft Discord…
+Join the ArtCraft community
+Justification Alternates
+Keep Both
+Keep within column
+Kenten Color
+Kenten Settings
+Kenten Type:
+Kerning/Tracking Step
+Kerning/Tracking:
+Key Object
+Key: {key}
+Keyboard
+Keyboard Shortcuts (JSON)
+Keyboard: US
+Keyboard: US (macOS)
+Kind
+Kinsoku Set:
+Kinsoku Type:
+Korean Kinsoku
+Label
+Large Sample Text Size
+Last commit
+Latex
+Layer Options for \
+Layout page
+Leading Model:
+Left/Right Position:
+Left/Top
+Legal
+Letter
+Letter - Half
+Line Break Options
+Line Spacing:
+Line Tool
+Line breaks
+Line delta
+Lines +/−
+Lines added
+Lines deleted
+List Composite Fonts
+List Styles in File
+Load All Text Styles…
+Load Character Styles…
+Load Paragraph Styles…
+Load Styles
+Load Styles…
+Load cursor
+Loading fonts…
+Localized Forms
+Lock Workspace
+Magnification:
+Mark Positioning
+Marker
+Marks
+Matched without change
+Maximize Frame
+Maximize/Restore Window
+Measure Tool
+Medium Sample Text Size
+Merged PRs
+Message
+Message:
+Millimeters
+Minimize Window
+Minimum Height
+Minimum Scale:
+Minimum Width
+Minimum height
+Minimum width
+Missing only
+Mobile 1080 × 1920
+Mobile 390 × 844
+Mode
+Models
+Modifier on
+Mojikumi Set:
+Monospaced
+More
+More ArtCraft apps
+Move Guides
+Move Panel
+Move Panel to New Window
+Move Tab
+Move Window
+Move panel column
+Move panel window
+Move tab group
+N/A
+Name (A–Z)
+New Cell Style
+New Set…
+New Table Style
+New shortcut:
+New shortcut: {chord}
+No Adjustment
+No Line Breaks
+No contributor data was built into this copy.
+No fonts match
+No matches
+No model credits were built into this copy.
+Not assigned
+Not changed
+Not matched
+Note Tool
+Nothing uses this key
+Now used by {label}
+Number
+Object Style
+Object point
+Odd Page Break
+Offset from Parent
+OpenType font
+Optical Margin Alignment
+Optical Margin Size
+Option
+Org
+Organization:
+Other Styles:
+PDF import cancelled: the originating document has closed
+PDF/X-1a:2003
+PRs
+Page Number:
+Page Options
+Page Size:
+Page Tool
+Page break before
+Page layout
+Panel or context
+Para style
+Paragraph Style
+Paragraphs
+Parent
+Parent Character Spacing:
+Parent Page Size
+Parent's Font
+Part of the ArtCraft suite of open creative tools.
+Pattern
+Pdf
+Pdf crop
+Pdf page
+Pen Tool
+Pencil Tool
+Per-Character Ruby
+Phone
+Pin Bar Position
+Pixels
+Place cancelled while a dialog is open
+Points
+Polygon Frame Tool
+Polygon Tool
+Pos
+Postcard
+Prefix
+Presentation
+Preset Details
+Preset Name
+Press keys…
+Preview Change
+Preview Record
+Primary text frame
+Printer
+Prioritize Adjustment Amount
+Proportional Metrics
+Push In First
+Push Out First
+Push Out Only
+Quit DesignCraft
+Range:
+Rasterize
+Real name
+Recent
+Recent Files
+Rect
+Rectangle Frame Tool
+Rectangle Tool
+Redefine Character Style
+Redefine Document Style
+Redefine Paragraph Style
+Redefine styles
+Ref
+Ref char style
+Ref position
+Reference Point
+Relinked {count}
+Reload Fonts
+Remove Data Source
+Remove Existing Ruler Guides
+Remove Field
+Remove Frame from Thread
+Remove existing
+Remove {chord} from {label}
+Remove »
+Rename…
+Rensuuji
+Reorder Objects
+Replace All
+Replace Existing Table of Contents
+Replace with:
+Report an issue
+Reset All
+Reset All…
+Reset Bar Position
+Resize Row or Column
+Resize Window
+Resize panel window
+Resize panels
+Restart
+Restore Frame Size
+Restore every default shortcut in this set?
+Restore the default for {label}
+Reverse the order
+Revert Set
+Right/Bottom
+Roman Baseline
+Roman Italics
+Roman Word Break
+Rotate Roman Characters in Vertical Text
+Rotate Tool
+Row gutter
+Ruby Color
+Ruby Font and Size
+Ruby Overhang:
+Ruby Placement and Spacing
+Ruby Type:
+Rule
+Ruler Zero Point
+Run in
+Same as Previous Document in the Book
+Sample
+Sans Serif
+Save Document Preset
+Save Document Preset As:
+Save Preset
+Save changes to “{set}”?
+Saved
+Saved Presets
+Scale Tool
+Scissors Tool
+Scope
+Script
+Search by key
+Section Marker:
+Section Prefix:
+Section headings
+Select Guide
+Select Page
+Select Paragraph
+Select Parent Page
+Select Sentence
+Select Story
+Select Text Unit
+Select a command first
+Select a command to see and change its shortcuts
+Select an object to color its fill or stroke.
+Selected Text
+Selection Tool
+Sent {count} page(s) to {printer}
+Separator
+Serif
+Sesame Dot
+Set Composite Font
+Set OpenType Features
+Set name:
+Set:
+Shape
+Shatai
+Shear Tool
+Shift
+Shortcut
+Shortcut Sets
+Show Recently Added
+Show Similar Fonts
+Show Styles
+Show the Typography panel
+Show:
+Shrink Ruby Width Automatically
+Similar to {family}
+Simplified Chinese Kinsoku
+Skipped
+Slab Serif
+Small Black Circle
+Small Sample Text Size
+Small White Circle
+Smooth Tool
+Soft Kinsoku
+Sort Entries in Alphabetical Order
+Source Sans 3 Regular
+Source Sans 3 Semibold
+Space
+Space after
+Space before
+Space between
+Span columns
+Start
+Start #
+Start Chapter Numbering at:
+Start Page Numbering at:
+Start Section
+Start at
+Start number
+Start page
+Stop Preview
+Story Editor — {count} words
+Story Options
+Story {story} ← story {parent}
+Stroke Behind Fill
+Stroke Weight
+Styles in Table of Contents
+Stylistic Alternates
+Stylistic Set
+Subject
+Subject:
+Subpath
+Suffix
+Suggestions
+Suggestions ({n})
+Summarize…
+Super
+Swap Text Fill and Stroke
+Symbol
+Tablet 1024 × 1366
+Tabloid
+Tagged
+Take It
+Take It and Go to Conflict
+Taken from other commands
+Target
+Tate-chu-yoko Digits:
+Tate-chu-yoko Settings
+Text Anchor
+Text Color
+Text:
+The file is too large
+The name is empty, too long or has control characters
+The scope {scope} is unknown
+The selected fonts have no OpenType features.
+The set was not found
+There are too many sets
+This command is unknown
+This file is from a newer version (format {n})
+This is not a craft-keymap file
+This is not a shortcut set file
+This page
+This page is
+This style is in use. Text using it will be reassigned to:
+Thread Text Frames
+Threshold
+Title
+Title:
+To Body
+To Footer
+To Header
+To family
+To spread
+To style
+Toc title
+Toggle Text and Cell Selection
+Tolerance
+Too many shortcuts are assigned
+Tools
+Topics
+Traditional Chinese Kinsoku
+Transparency Flattener
+TrueType font
+Type Tool
+Type on a Path Tool
+Type…
+Unlimited
+Unreadable
+Unsaved Changes
+Up/Down Position:
+Update Data Source
+Url
+Use
+Use Default
+Use Document Style Definition
+Use OpenType Pro Ruby Glyphs
+Use Paragraph Gyoudori
+Use minimum height
+Use minimum width
+Username
+VA
+Validate from Root Element
+Value
+Variable font
+Vertical Type Tool
+Vertical Type on a Path Tool
+View/Extras
+View/Proof Setup
+View/Rotate Spread
+View/Screen Mode
+View/Separations Preview
+View/Structure
+Visible
+Warichu Settings
+Warichu Size:
+Web 1024 × 768
+Web 1366 × 768
+Web 1920 × 1080
+Welcome to DesignCraft
+White Circle
+White Sesame Dot
+White Triangle
+Will change
+Win
+With Shortcut
+Word
+X offset
+X relative
+Y offset
+Y:
+Your Recent Items
+Zoom Tool
+[No Language]
+ar
+cs
+de
+empty shortcut
+fr
+hu
+image editing
+in a context that is not imported
+it
+ja
+ka
+key sequences are not supported
+layer
+layers
+line {n}
+modifier {key} given twice
+mono
+more than one command fits
+motion graphics and visual effects
+no command has this name
+numeric keypad key read as main key
+only a command of the other kind fits (tool or menu command)
+photo library and raw development
+pl
+press keys
+pt-br
+reading, organizing and protecting PDFs
+reserved by the system
+ru
+sv
+taken by a later entry
+taken by {label}
+the default printer
+the scope is unknown
+the scope name is not valid
+the set's shortcuts could not be added
+the shortcut has no key
+the shortcut is too long
+the shortcuts could not be removed
+ui
+ui-semibold
+uk
+unknown key {key}
+unknown modifier {key}
+unsupported modifier {key}
+vector illustration
+video editing, color and sound
+zh
+{chord} (Default)
+{chord} (press again for a double press)
+{chord} ({scope})
+{chord} is reserved by the system
+{chord} was removed from {label}
+{chord}: {label}
+{contributors} contributors · {commits} commits
+{count} conflict(s): {names}
+{count} match(es)
+{count} replacement(s) made
+{key}: listed more than once
+{key}: no command has this name
+{key}: part of the entry was dropped
+{key}: the scope in “{text}” is unknown
+{key}: {text} is reserved by the system
+{key}: “{text}” is not a shortcut ({error})
+{label} (Changed)
+{label} (cycles)
+{label} ({scope})
+{label} ({scope}, both work)
+{label} keeps its shortcuts (matched by a panel menu name)
+{label}: press keys
+{label}: {chord}
+{label}: {chord} (Now used by {holder})
+{label}: {name} (double-click: Color Picker)
+{menu} Menu
+{name}: {count} step(s) done
+{n} command changed
+{n} command will change
+{n} commands changed
+{n} commands will change
+{n} entries cut at a limit
+{n} entries were ignored: too many commands
+{n} entry cut at a limit
+{n} entry was ignored: too many commands
+{n} item could not be read
+{n} item not matched
+{n} item without a shortcut
+{n} items could not be read
+{n} items not matched
+{n} items without a shortcut
+{n} key read approximately
+{n} keys read approximately
+{n} saved shortcut could not be used
+{n} saved shortcuts could not be used
+{n} shortcut also works in another scope
+{n} shortcut is assigned more than once
+{n} shortcuts also work in another scope
+{n} shortcuts are assigned more than once
+{panel} Panel
+{title} ({n})
+{title}: {set}
+« Add
+ΔLOC
+“{}” has changes that are not saved. Save them before closing?
+−Bin
+−LOC
+⚠ {chord} is used by {label}

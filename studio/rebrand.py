@@ -80,28 +80,31 @@ RULES = [
     ('crates/ui-egui/src/about.rs', '"Part of the ArtCraft suite of open creative tools."', '"Part of the Creative Studio suite of open creative tools."'),
     ('crates/ui-egui/src/about.rs', '"More ArtCraft apps"', '"More Creative Studio apps"'),
     # Top bar and start screen: no Discord button; the card introduces Creative Studio.
-    ('crates/ui-egui/src/chrome.rs', '''                            // Always one click away: the ArtCraft community Discord.
+    ('crates/ui-egui/src/chrome/app_bar.rs', '''                            // Always one click away: the ArtCraft community Discord.
                             if crate::about::discord_button(ui, "Discord", vec2(78.0, 22.0)) {
                                 let _ = app.run("help.discord", json!({}));
                             }
 ''', '                            // No Discord button in the app bar: the Help menu has the upstream community.\n'),
     # Start screen: the Discord button on the right of the card.
-    ('crates/ui-egui/src/chrome.rs', '''            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if crate::about::discord_button(ui, crate::i18n::tr(&app.ui.language, "Join our Discord"), BUTTON) {
+    ('crates/ui-egui/src/chrome/start_screen.rs', '''            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                if crate::about::discord_button(ui, label, BUTTON) {
                     let _ = app.run("help.discord", json!({}));
                 }
             });
 ''', '            // No Discord button on the start screen (the Help menu has the upstream community).\n'),
-    ('crates/ui-egui/src/chrome.rs', '"Join the ArtCraft community"', '"Creative Studio"'),
-    ('crates/ui-egui/src/chrome.rs', '"Get help, share your layouts and shape what we build next."', '"Part of the Creative Studio suite of open creative tools."'),
-    ('crates/ui-egui/src/chrome.rs', '[("DesignCraft page", "help.appPage"), ("GitHub", "help.github"), ("getartcraft.com", "help.website")]',
-     '[("DesignCraft page", "help.appPage"), ("GitHub", "help.github"), ("studio.creative.ps", "help.website")]'),
+    ('crates/ui-egui/src/chrome/start_screen.rs', '"Join the ArtCraft community"', '"Creative Studio"'),
+    ('crates/ui-egui/src/chrome/start_screen.rs', '"Join the Creative Studio community"', '"Creative Studio"'),
+    ('crates/ui-egui/src/chrome/start_screen.rs', '"Get help, share your layouts and shape what we build next."', '"Part of the Creative Studio suite of open creative tools."'),
+    ('crates/ui-egui/src/chrome/start_screen.rs', '[("DesignCraft page", "help.appPage"), ("GitHub", "help.github"), ("getartcraft.com", "help.website")]',
+     '[("trteeb page", "help.appPage"), ("GitHub", "help.github"), ("studio.creative.ps", "help.website")]'),
+    ('crates/ui-egui/src/chrome/start_screen.rs', '[("trteeb page", "help.appPage"), ("GitHub", "help.github"), ("getartcraft.com", "help.website")]',
+     '[("trteeb page", "help.appPage"), ("GitHub", "help.github"), ("studio.creative.ps", "help.website")]'),
     # Help menu: Discord is upstream's community, labelled as such; the site is ours.
-    ('crates/ui-egui/src/menus.rs', '"ArtCraft Website…"', '"Creative Studio Website…"'),
-    ('crates/ui-egui/src/menus.rs', '"ArtCraft App Page…"', '"Creative Studio App Page…"'),
-    ('crates/ui-egui/src/menus.rs', '"{} — opens https://getartcraft.com/apps/designcraft"', f'"{{}} — opens {APP_SITE}"'),
-    ('crates/ui-egui/src/menus.rs', '"{} — opens https://github.com/storytold/designcraft"', f'"{{}} — opens {REPO}"'),
-    ('crates/ui-egui/src/menus.rs', '"{} — opens https://getartcraft.com"', f'"{{}} — opens {SITE}"'),
+    ('crates/ui-egui/src/menus/ui_commands.rs', '"ArtCraft Website…"', '"Creative Studio Website…"'),
+    ('crates/ui-egui/src/menus/ui_commands.rs', '"ArtCraft App Page…"', '"Creative Studio App Page…"'),
+    ('crates/ui-egui/src/menus/ui_commands.rs', '"{} — opens https://getartcraft.com/apps/designcraft"', f'"{{}} — opens {APP_SITE}"'),
+    ('crates/ui-egui/src/menus/ui_commands.rs', '"{} — opens https://github.com/storytold/designcraft"', f'"{{}} — opens {REPO}"'),
+    ('crates/ui-egui/src/menus/ui_commands.rs', '"{} — opens https://getartcraft.com"', f'"{{}} — opens {SITE}"'),
     # Web page.
     ('apps/designcraft-web/index.html', '<title>DesignCraft</title>', f'<title>{NAME}</title>'),
     ('apps/designcraft-web/index.html', 'Loading DesignCraft&hellip;', f'Loading {NAME}&hellip;', 'ss-scene'),  # or the splash
@@ -246,23 +249,15 @@ def apply_packaging_names() -> list:
 # (upstream text, our text) pair is skipped once our text is in the file.
 EXT_FILES = {
     'crates/format/src/lib.rs': [
-        ('/// The file name extension of a DesignCraft document.\npub const EXTENSION: &str = "designcraft";\n',
-         '/// The file name extension of upstream DesignCraft documents: still opened.\n'
-         'pub const EXTENSION: &str = "designcraft";\n'
-         '/// The file name extension trteeb saves documents with (the same contents as `EXTENSION`).\n'
-         'pub const STUDIO_EXTENSION: &str = "trteeb";\n\n'
-         '/// Is `ext` (without the dot, any case) a document extension this app opens?\n'
-         'pub fn is_native_ext(ext: &str) -> bool {\n'
-         '    ext.eq_ignore_ascii_case(STUDIO_EXTENSION) || ext.eq_ignore_ascii_case(EXTENSION)\n'
-         '}\n'),
+        ('pub const STUDIO_EXTENSION: &str = "trteeb";', 'pub const STUDIO_EXTENSION: &str = "trteeb";'),
     ],
-    'crates/engine/src/cmd/file.rs': [
+    'crates/engine/src/cmd/file/bytes.rs': [
         ('/// `path` ending in `.designcraft`: the extension is added when it is missing or another one, so\n'
          '/// the file opens from the file manager. A path without a file name is left for the write to fail.\n'
          'pub fn with_document_extension(path: &str) -> String {\n'
          '    let p = std::path::Path::new(path);\n'
-         '    let ext = p.extension().and_then(|e| e.to_str());\n'
-         '    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::EXTENSION)) {\n'
+         '    let ext = p.extension().and_then(std::ffi::OsStr::to_str);\n'
+         '    if p.file_name().is_none() || ext.is_some_and(|e| craft_file_formats::from_extension(e) == Some(craft_file_formats::Format::DesignCraft)) {\n'
          '        return path.to_string();\n'
          '    }\n'
          '    format!("{path}.{}", designcraft_format::EXTENSION)\n'
@@ -272,7 +267,7 @@ EXT_FILES = {
          '/// without a file name is left for the write to fail.\n'
          'pub fn with_document_extension(path: &str) -> String {\n'
          '    let p = std::path::Path::new(path);\n'
-         '    let ext = p.extension().and_then(|e| e.to_str());\n'
+         '    let ext = p.extension().and_then(std::ffi::OsStr::to_str);\n'
          '    if p.file_name().is_none() || ext.is_some_and(|e| e.eq_ignore_ascii_case(designcraft_format::STUDIO_EXTENSION)) {\n'
          '        return path.to_string();\n'
          '    }\n'
@@ -281,15 +276,13 @@ EXT_FILES = {
          '    }\n'
          '    format!("{path}.{}", designcraft_format::STUDIO_EXTENSION)\n'
          '}'),
-        ('if !native && ext != designcraft_format::EXTENSION {', 'if !native && !designcraft_format::is_native_ext(&ext) {'),
-        ('without the .designcraft extension gets it', 'without the .trteeb extension gets it'),
     ],
     'crates/doc/src/vars.rs': [
         ('format!("{}.designcraft", self.title)', 'format!("{}.trteeb", self.title)'),
     ],
-    'apps/designcraft/src/main.rs': [
+    'crates/ui-egui/src/app/file_dialogs.rs': [
         ('suggests (`Brochure.designcraft`)', 'suggests (`Brochure.trteeb`)'),
-        ('if ext.eq_ignore_ascii_case("designcraft") {', 'if ext.eq_ignore_ascii_case("trteeb") {'),
+        ('if ext.eq_ignore_ascii_case("designcraft") {', 'if ext.eq_ignore_ascii_case("trteeb") || ext.eq_ignore_ascii_case("designcraft") {'),
         ('A document always ends in `.designcraft`', 'A document always ends in `.trteeb`'),
         ('OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["designcraft", "idml", "indd", "indt"] },',
          'OpenFilter { name: "trteeb, IDML or InDesign", extensions: &["trteeb", "designcraft", "idml", "indd", "indt"] },'),
@@ -299,6 +292,13 @@ EXT_FILES = {
         ('"Untitled.designcraft"', '"Untitled.trteeb"'),
         ('PathBuf::from("/d/Brochure.designcraft")', 'PathBuf::from("/d/Brochure.trteeb")'),
         ('PathBuf::from("/d/Brochure.idml.designcraft")', 'PathBuf::from("/d/Brochure.idml.trteeb")'),
+    ],
+    'crates/ui-egui/src/menus/run.rs': [
+        ('format!("{}.designcraft", ', 'format!("{}.trteeb", '),
+        ('format!("{} copy.designcraft", ', 'format!("{} copy.trteeb", '),
+    ],
+    'crates/ui-egui/src/menus/export.rs': [
+        ('format!("{}.designcraft", ', 'format!("{}.trteeb", '),
     ],
     'apps/designcraft-web/src/web.rs': [
         ('const DOC_EXTS: &[&str] = &["designcraft", "idml", "indd", "indt"];', 'const DOC_EXTS: &[&str] = &["trteeb", "designcraft", "idml", "indd", "indt"];'),
